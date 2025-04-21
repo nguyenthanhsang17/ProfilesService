@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: profile-service
+  datasource:
+    url: jdbc:mariadb://3.112.235.50:3306/profile_service
+    username: root
+    password: fred
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+  cloud:
+    discovery:
+      enabled: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://3.112.235.50:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+
+mybatis:
+  mapper-locations: classpath:mybatis/mappers/*.xml
+  config-location: classpath:mybatis/mybatis-config.xml
+  type-aliases-package: com.a2m.profileservice.model
+
+server:
+  port: 8888
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
