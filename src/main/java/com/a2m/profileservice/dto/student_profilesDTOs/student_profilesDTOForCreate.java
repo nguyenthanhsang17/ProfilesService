@@ -1,17 +1,17 @@
-package com.a2m.profileservice.model;
+package com.a2m.profileservice.dto.student_profilesDTOs;
 
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 
+@Data
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString
-public class student_profiles {
-    private String profileId;
+public class student_profilesDTOForCreate {
     private String fullName;
     private String major;
     private Date dateOfBirth;
@@ -21,9 +21,7 @@ public class student_profiles {
     private Date academicYearStart;
     private Date academicYearEnd;
     private String phoneNumber;
-    private boolean isApproved;
-    private String status;
-    private boolean isDeleted;
-    private Date createdAt;
-    private Date updatedAt;
+
+    private List<String> StudentCardUrl;
+
 }

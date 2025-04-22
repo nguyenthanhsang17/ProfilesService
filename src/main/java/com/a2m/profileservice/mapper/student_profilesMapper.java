@@ -8,4 +8,7 @@ import java.util.List;
 @Mapper
 public interface student_profilesMapper {
     public List<student_profiles> getAll();
+    public student_profiles getById(String id);
+    public int checkExits(String id);
+    int createStudentProfile(student_profiles studentProfiles);
 }

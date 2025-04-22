@@ -25,8 +25,37 @@
 
     <!-- Lấy thông tin User theo ID -->
     <select id="getAll" resultMap="studentProfileResultMap">
-        SELECT * FROM profile_service.business_profiles
+        SELECT * FROM profile_service.student_profiles
     </select>
+
+    <select id="getById" resultMap="studentProfileResultMap">
+        SELECT * FROM profile_service.student_profiles where profile_id like #{id}
+    </select>
+
+    <select id="checkExits" resultType="int">
+        SELECT COUNT(1)
+        FROM profile_service.student_profiles
+        WHERE profile_id = #{id}
+    </select>
+
+
+    <insert id="createStudentProfile" parameterType="student_profiles">
+        INSERT INTO profile_service.student_profiles (
+        profile_id, full_name, major, date_of_birth, address, university,
+        avatar_url, academic_year_start, academic_year_end, phone_number,
+        is_approved, status, is_deleted, created_at, updated_at
+        )
+        VALUES (
+        #{profileId}, #{fullName}, #{major}, #{dateOfBirth}, #{address},
+        #{university}, #{avatarUrl}, #{academicYearStart}, #{academicYearEnd},
+        #{phoneNumber}, 1, 1,
+        0, <!-- isDeleted = 0 -->
+        NOW(), <!-- createdAt = current time -->
+        NOW() <!-- updatedAt = NULL -->
+        )
+    </insert>
+
+
 
 
 

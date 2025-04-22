@@ -9,10 +9,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @OpenAPIDefinition(info = @Info(title = "Spring Boot API", version = "1.0", description = "API Documentation"))
 @SecurityScheme(
-        name = "bearerAuth",              // Tên scheme, bạn có thể đặt tùy ý
-        type = SecuritySchemeType.HTTP,   // Loại xác thực là HTTP
-        scheme = "bearer",                // Sử dụng Bearer Token
-        bearerFormat = "JWT"              // Định dạng token (thường là JWT)
+        name = "bearerAuth",
+        type = SecuritySchemeType.HTTP,
+        scheme = "bearer",
+        bearerFormat = "JWT"
 )
 public class OpenAPIConfig {
 }
