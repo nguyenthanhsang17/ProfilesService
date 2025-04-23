@@ -8,7 +8,8 @@ public enum ErrorCode {
     // 1xxx – Auth
     BUSINESS_EXISTED(1001, "Business already exists", HttpStatus.BAD_REQUEST),
     BUSINESS_NOT_FOUND(1002, "Business not found", HttpStatus.NOT_FOUND),
-    INVALID_CREDENTIALS(1003, "Username or password is incorrect", HttpStatus.UNAUTHORIZED),
+    BUSINESS_IMAGE_NOT_FOUND(1003, "Business image not found", HttpStatus.NOT_FOUND),
+    INVALID_CREDENTIALS(1004, "Username or password is incorrect", HttpStatus.UNAUTHORIZED),
 
     // 2xxx – Validation
     VALIDATION_ERROR(2001, "Invalid input: {field}", HttpStatus.BAD_REQUEST),

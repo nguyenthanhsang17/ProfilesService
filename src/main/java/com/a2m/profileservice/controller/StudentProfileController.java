@@ -1,7 +1,7 @@
 package com.a2m.profileservice.controller;
 
 import com.a2m.profileservice.dto.ApiResponse;
-import com.a2m.profileservice.dto.student_profilesDTOs.student_profilesDTO;
+//import com.a2m.profileservice.dto.student_profilesDTOs.student_profilesDTO;
 import com.a2m.profileservice.service.StudentProfileService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,11 +36,11 @@ public class StudentProfileController {
         return  ResponseEntity.ok(response);
     }
 
-    @GetMapping("/getall")
-    public ResponseEntity<ApiResponse<List<student_profilesDTO>>> getAll() {
-        var api =  studentProfileService.getAll();
-        return ResponseEntity.ok(api);
-    }
+//    @GetMapping("/getall")
+//    public ResponseEntity<ApiResponse<List<student_profilesDTO>>> getAll() {
+//        var api =  studentProfileService.getAll();
+//        return ResponseEntity.ok(api);
+//    }
 
 
 }
