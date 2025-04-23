@@ -10,6 +10,7 @@ public enum ErrorCode {
     BUSINESS_NOT_FOUND(1002, "Business not found", HttpStatus.NOT_FOUND),
     BUSINESS_IMAGE_NOT_FOUND(1003, "Business image not found", HttpStatus.NOT_FOUND),
     INVALID_CREDENTIALS(1004, "Username or password is incorrect", HttpStatus.UNAUTHORIZED),
+    BUSINESS_NOT_AUTHORIZED(1005, "Business not authorized", HttpStatus.FORBIDDEN),
 
     // 2xxx – Validation
     VALIDATION_ERROR(2001, "Invalid input: {field}", HttpStatus.BAD_REQUEST),

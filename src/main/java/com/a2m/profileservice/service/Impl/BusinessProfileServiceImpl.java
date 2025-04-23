@@ -62,15 +62,20 @@ public class BusinessProfileServiceImpl implements BusinessProfileService {
             throw new AppException(ErrorCode.BUSINESS_NOT_FOUND);
         }
 
-        if(businessProfiles.getUpdatedAt() == null) {
-            businessProfiles.setUpdatedAt(LocalDateTime.now());
+        if(existingBusinessProfile.isApproved() == false){
+            throw new AppException(ErrorCode.BUSINESS_NOT_AUTHORIZED);
+        } else {
+            if(existingBusinessProfile.getStatus() == "active") { // nếu đã acp thì không cho sửa
+                throw new AppException(ErrorCode.BUSINESS_NOT_AUTHORIZED);
+            }else {
+                if(businessProfiles.getUpdatedAt() == null) {
+                    businessProfiles.setUpdatedAt(LocalDateTime.now());
+                }
+
+                businessProfilesMapper.updateBusinessProfile(businessProfiles);
+            }
         }
 
-        businessProfiles.setApproved(false);
-        businessProfiles.setStatus("inactive");
-        businessProfiles.setDeleted(false);
-
-        businessProfilesMapper.updateBusinessProfile(businessProfiles);
         return businessProfiles;
     }
 }
