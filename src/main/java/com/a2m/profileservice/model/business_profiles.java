@@ -2,6 +2,7 @@ package com.a2m.profileservice.model;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 @Getter
 @Setter
@@ -21,6 +22,6 @@ public class business_profiles {
     private boolean isApproved;
     private String status;
     private boolean isDeleted;
-    private Date createdAt;
-    private Date updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

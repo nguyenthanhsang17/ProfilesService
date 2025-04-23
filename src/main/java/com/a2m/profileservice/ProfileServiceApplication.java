@@ -1,6 +1,7 @@
 package com.a2m.profileservice;
 
 import com.netflix.discovery.EurekaClientConfig;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,6 +10,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
 @EnableDiscoveryClient
+@MapperScan("com.a2m.profileservice.mapper")
 public class ProfileServiceApplication {
 
     @Autowired

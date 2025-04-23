@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.a2m.profileservice.mapper.business_profilesMapper">
+
+    <!-- Map kết quả từ cơ sở dữ liệu thành Business Profile -->
+    <resultMap id="businessProfileResultMap" type="com.a2m.profileservice.model.business_profiles">
+        <id property="profileId" column="profile_id" />
+        <result property="companyName" column="company_Name" />
+        <result property="industry" column="industry" />
+        <result property="companyInfo" column="company_info"/>
+        <result property="websiteUrl" column="website_url"/>
+        <result property="taxCode" column="tax_code"/>
+        <result property="email" column="email"/>
+        <result property="phoneNumber" column="phone_number"/>
+        <result property="address" column="address"/>
+        <result property="isApproved" column="is_approved" jdbcType="BOOLEAN"/>
+        <result property="status" column="status"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="BOOLEAN"/>
+        <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+        <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!-- Business Verifycation -->
+    <insert id="businessVerifycation">
+        INSERT INTO profile_service.business_profiles (
+            profile_id, company_name, industry, company_info, website_url, tax_code,
+            email, phone_number, address,
+            is_approved, status, is_deleted, created_at, updated_at
+        )
+        VALUES (
+                   #{profileId},
+                   #{businessProfiles.companyName}, #{businessProfiles.industry},
+                   #{businessProfiles.companyInfo}, #{businessProfiles.websiteUrl},
+                   #{businessProfiles.taxCode}, #{businessProfiles.email},
+                   #{businessProfiles.phoneNumber}, #{businessProfiles.address},
+                   #{businessProfiles.isApproved}, #{businessProfiles.status},
+                   #{businessProfiles.isDeleted}, #{businessProfiles.createdAt},
+                   #{businessProfiles.updatedAt}
+               )
+    </insert>
+
+    <!-- Lấy taxCode -->
+    <select id="findByTaxCode" parameterType="String" resultMap="businessProfileResultMap">
+        SELECT * FROM profile_service.business_profiles
+        WHERE tax_code = #{taxCode} AND is_deleted = false
+    </select>
+
+    <!-- Lấy thông tin business profile theo id -->
+    <select id="getBusinessProfileById" parameterType="String" resultMap="businessProfileResultMap">
+        SELECT * FROM profile_service.business_profiles
+        WHERE profile_id = #{profileId} AND is_deleted = false
+    </select>
+
+    <!-- Cập nhật thông tin business profile -->
+    <update id="updateBusinessProfile" parameterType="com.a2m.profileservice.model.business_profiles">
+        UPDATE profile_service.business_profiles
+        SET company_name = #{companyName},
+            industry = #{industry},
+            company_info = #{companyInfo},
+            website_url = #{websiteUrl},
+            email = #{email},
+            phone_number = #{phoneNumber},
+            address = #{address},
+            updated_at = NOW()
+        WHERE profile_id = #{profileId}
+        AND is_deleted = false
+    </update>
+
+
+</mapper>
