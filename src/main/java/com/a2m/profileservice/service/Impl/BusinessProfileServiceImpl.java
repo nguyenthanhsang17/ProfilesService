@@ -29,7 +29,7 @@ public class BusinessProfileServiceImpl implements BusinessProfileService {
 
         businessProfiles.setProfileId(profileId);
         businessProfiles.setApproved(false);
-        businessProfiles.setStatus("inactive");
+//        businessProfiles.setStatus("inactive");
         businessProfiles.setDeleted(false);
 
         businessProfilesMapper.businessVerifycation(businessProfiles, profileId);
