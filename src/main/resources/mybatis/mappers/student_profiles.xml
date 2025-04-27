@@ -29,7 +29,7 @@
     </select>
 
     <select id="getById" resultMap="studentProfileResultMap">
-        SELECT * FROM profile_service.student_profiles where profile_id like #{id}
+        SELECT * FROM profile_service.student_profiles where profile_id = #{id}
     </select>
 
     <select id="checkExits" resultType="int">
@@ -54,6 +54,22 @@
         NOW() <!-- updatedAt = NULL -->
         )
     </insert>
+
+    <update id="updateStudentProfile" parameterType="student_profiles">
+        UPDATE student_profiles
+        SET
+        full_name = #{fullName},
+        major = #{major},
+        date_of_birth = #{dateOfBirth},
+        address = #{address},
+        university = #{university},
+        avatar_url = #{avatarUrl},
+        academic_year_start = #{academicYearStart},
+        academic_year_end = #{academicYearEnd},
+        phone_number = #{phoneNumber},
+        updated_at = NOW()  <!-- Cập nhật trường updated_at thành thời gian hiện tại -->
+        WHERE profile_id = #{profileId}
+    </update>
 
 
 

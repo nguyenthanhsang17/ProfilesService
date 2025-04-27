@@ -32,6 +32,10 @@ public enum ErrorCode {
     APPLICATION_DUPLICATE(5008, "Application already exists", HttpStatus.CONFLICT),
     ROLE_ASSIGNMENT_FAILED(5009, "Failed to assign role", HttpStatus.INTERNAL_SERVER_ERROR),
 
+    //sang
+    REQUEST_STUDENT_ALREADY_REGISTERED(6001, "Register Student already registered", HttpStatus.BAD_REQUEST),
+    CV_NOT_FOUND(6002, "CV not found", HttpStatus.NOT_FOUND),
+    CV_NOT_OWNER(6003, "CV not OWNER", HttpStatus.BAD_REQUEST),
     // 9xxx – System
     INTERNAL_ERROR(9999, "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR);
 

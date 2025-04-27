@@ -4,8 +4,10 @@ import com.a2m.profileservice.dto.ApiResponse;
 import com.a2m.profileservice.dto.StudentCardDTO.StudentCardDTO;
 import com.a2m.profileservice.dto.student_profilesDTOs.student_profilesDTO;
 import com.a2m.profileservice.dto.student_profilesDTOs.student_profilesDTOForCreate;
+import com.a2m.profileservice.dto.student_profilesDTOs.student_profilesDTOForUpdate;
 import com.a2m.profileservice.exception.AppException;
 import com.a2m.profileservice.exception.ErrorCode;
+import com.a2m.profileservice.mapper.RequestStudentMapper;
 import com.a2m.profileservice.mapper.StudentCardMapper;
 import com.a2m.profileservice.mapper.student_profilesMapper;
 import com.a2m.profileservice.model.StudentCard;
@@ -25,21 +27,23 @@ public class StudentProfileServiceImpl implements StudentProfileService {
 
     private final student_profilesMapper mapper;
     private final StudentCardMapper studentCardMapper;
+    private final RequestStudentMapper requestStudentMapper;
 
     @Autowired
-    public StudentProfileServiceImpl(student_profilesMapper mapper, StudentCardMapper studentCardMapper) {
+    public StudentProfileServiceImpl(student_profilesMapper mapper, StudentCardMapper studentCardMapper, RequestStudentMapper requestStudentMapper) {
         this.mapper = mapper;
         this.studentCardMapper = studentCardMapper;
+        this.requestStudentMapper = requestStudentMapper;
     }
 
 
     @Override
     public ApiResponse<List<student_profilesDTO>> getAll() {
         List<student_profiles> student_profiles = mapper.getAll();
-        System.out.println("student_profiles is null"+student_profiles);
+        System.out.println("student_profiles is null" + student_profiles);
         List<student_profilesDTO> student_profilesDTOs = new ArrayList<student_profilesDTO>();
-        System.out.println("student_profiles is null"+student_profiles);
-        if(student_profiles.size()==0){
+        System.out.println("student_profiles is null" + student_profiles);
+        if (student_profiles.size() == 0) {
             System.out.println("student_profiles is null");
             throw new AppException(ErrorCode.STUDENT_NOT_FOUND);
         }
@@ -99,6 +103,10 @@ public class StudentProfileServiceImpl implements StudentProfileService {
         studentProfiles.setDeleted(student_profiles.isDeleted());
         studentProfiles.setCreatedAt(student_profiles.getCreatedAt());
         studentProfiles.setUpdatedAt(student_profiles.getUpdatedAt());
+
+        List<StudentCard> studentCards = studentCardMapper.getStudentCardByStudentId(id);
+        List<StudentCardDTO> studentCardDTOS = studentCards.stream().map(stc -> new StudentCardDTO(stc.getCardId(), stc.getStudentCardUrl(), stc.isDeleted())).collect(Collectors.toList());
+        studentProfiles.setStudentCardDTOS(studentCardDTOS);
         apiResponse.setData(studentProfiles);
         apiResponse.setMessage("Success");
         apiResponse.setCode(200);
@@ -136,8 +144,74 @@ public class StudentProfileServiceImpl implements StudentProfileService {
     }
 
     @Override
-    public ApiResponse<Object> UpdateProfileStudent(student_profilesDTO student_profilesDTO, String id) {
-        return null;
+    public ApiResponse<Object> UpdateProfileStudent(student_profilesDTOForUpdate student_profilesDTO, String id) {
+        boolean check = requestStudentMapper.checkRequestStudentAlreadyRegistered(id);
+        if (check) {
+            throw new AppException(ErrorCode.REQUEST_STUDENT_ALREADY_REGISTERED);
+        }
+
+        student_profiles studentProfiles = mapper.getById(id);
+        if (studentProfiles == null) {
+            throw new AppException(ErrorCode.STUDENT_NOT_FOUND);
+        }
+        studentProfiles.setFullName(student_profilesDTO.getFullName());
+        studentProfiles.setMajor(student_profilesDTO.getMajor());
+        studentProfiles.setDateOfBirth(student_profilesDTO.getDateOfBirth());
+        studentProfiles.setAddress(student_profilesDTO.getAddress());
+        studentProfiles.setUniversity(student_profilesDTO.getUniversity());
+        studentProfiles.setAvatarUrl(student_profilesDTO.getAvatarUrl());
+        studentProfiles.setPhoneNumber(student_profilesDTO.getPhoneNumber());
+        studentProfiles.setAcademicYearStart(student_profilesDTO.getAcademicYearStart());
+        studentProfiles.setAcademicYearEnd(student_profilesDTO.getAcademicYearEnd());
+
+        int row = mapper.updateStudentProfile(studentProfiles);
+        if (row <= 0) {
+            throw new AppException(ErrorCode.DATABASE_CONNECTION_FAILED);
+        }
+        // logic has big problem !!!!
+//        if ((student_profilesDTO.getStudentCardUrlNew() == null ||
+//            !student_profilesDTO.getStudentCardUrlNew().isPresent() || student_profilesDTO.getStudentCardUrlNew().get().size() == 0)&&) {
+//            ApiResponse<Object> apiResponse = new ApiResponse<>();
+//            apiResponse.setCode(200);
+//            apiResponse.setMessage("Update Success");
+//            return apiResponse;
+//        }
+        var stdcard = studentCardMapper.getStudentCardByStudentId(id);
+        List<String> studentcardidsold = new ArrayList<>();
+        studentcardidsold = stdcard.stream().map(s -> s.getCardId()).collect(Collectors.toList());
+        System.out.println("cardid old"+studentcardidsold);
+        System.out.println("cardid new"+student_profilesDTO.getStudentCardUrlId()==null?"null":student_profilesDTO.getStudentCardUrlId().size());
+        List<String> diff = getDifference(studentcardidsold, student_profilesDTO.getStudentCardUrlId());
+        System.out.println("cardid diff: "+diff.size());
+        for (String s : diff) {
+            int r = studentCardMapper.DeleteStudentCard(s);
+            if (r != 1) {
+                throw new AppException(ErrorCode.DATABASE_CONNECTION_FAILED);
+            }
+        }
+
+        if (student_profilesDTO.getStudentCardUrlNew() != null && student_profilesDTO.getStudentCardUrlNew().isPresent()) {
+            List<String> temp = student_profilesDTO.getStudentCardUrlNew().get();
+            for (String s : temp) {
+                int r = studentCardMapper.CreateStudentCard(StudentCard.builder().studentId(id).studentCardUrl(s).build());
+                if (r != 1) {
+                    throw new AppException(ErrorCode.DATABASE_CONNECTION_FAILED);
+                }
+            }
+        }
+
+        ApiResponse<Object> apiResponse = new ApiResponse<>();
+        apiResponse.setCode(200);
+        apiResponse.setMessage("Update Success");
+        return apiResponse;
+    }
+
+    private List<String> getDifference(List<String> oldid, List<String> newids) {
+        // Tạo một bản sao của list1 để giữ nguyên list1 ban đầu
+        List<String> difference = new ArrayList<>(oldid);
+        // Loại bỏ tất cả các phần tử có trong list2 khỏi difference
+        difference.removeAll(newids);
+        return difference;
     }
 
     @Override

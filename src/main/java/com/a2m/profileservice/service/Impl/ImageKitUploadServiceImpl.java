@@ -1,5 +1,6 @@
 package com.a2m.profileservice.service.Impl;
 
+import com.a2m.profileservice.dto.ApiResponse;
 import com.a2m.profileservice.service.ImageKitUploadService;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
@@ -21,10 +22,10 @@ public class ImageKitUploadServiceImpl implements ImageKitUploadService {
     private static final String PUBLIC_API_KEY = "public_Q+yi7A0O9A+joyXIoqM4TpVqOrQ=";
 
     @Override
-    public String uploadImage(MultipartFile file) {
+    public String uploadImage(MultipartFile file, String profileId) {
         try {
             RestTemplate restTemplate = new RestTemplate();
-
+            String folderPath = "Student/"+profileId;
             MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
             body.add("file", new ByteArrayResource(file.getBytes()) {
                 @Override
@@ -33,7 +34,7 @@ public class ImageKitUploadServiceImpl implements ImageKitUploadService {
                 }
             });
             body.add("fileName", file.getOriginalFilename());
-
+            body.add("folder", folderPath);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);
             headers.setBasicAuth(PRIVATE_API_KEY, "");
@@ -54,12 +55,12 @@ public class ImageKitUploadServiceImpl implements ImageKitUploadService {
     }
 
     @Override
-    public String uploadImages(List<MultipartFile> files) {
+    public String uploadImages(List<MultipartFile> files, String profileId) {
         try {
             RestTemplate restTemplate = new RestTemplate();
 
             StringBuilder responseBuilder = new StringBuilder();
-
+            String folderPath = "Student/"+profileId;
             for (MultipartFile file : files) {
                 if (file != null && !file.isEmpty()) {
                     MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
@@ -70,7 +71,7 @@ public class ImageKitUploadServiceImpl implements ImageKitUploadService {
                         }
                     });
                     body.add("fileName", file.getOriginalFilename());
-
+                    body.add("folder", folderPath);
                     HttpHeaders headers = new HttpHeaders();
                     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
                     headers.setBasicAuth(PRIVATE_API_KEY, "");
@@ -93,6 +94,39 @@ public class ImageKitUploadServiceImpl implements ImageKitUploadService {
         } catch (Exception e) {
             e.printStackTrace();
             return "Error while uploading files: " + e.getMessage();
+        }
+    }
+
+    @Override
+    public String uploadCV(MultipartFile file, String profileId) {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            String folderPath = "CV/"+profileId;
+            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+            body.add("file", new ByteArrayResource(file.getBytes()) {
+                @Override
+                public String getFilename() {
+                    return file.getOriginalFilename(); // tên file
+                }
+            });
+            body.add("fileName", file.getOriginalFilename());
+            body.add("folder", folderPath);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+            headers.setBasicAuth(PRIVATE_API_KEY, "");
+
+            HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(body, headers);
+
+            ResponseEntity<String> response = restTemplate.postForEntity(
+                    IMAGEKIT_UPLOAD_URL,
+                    request,
+                    String.class
+            );
+
+            return response.getBody(); // JSON response
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Lỗi khi đọc file: " + e.getMessage();
         }
     }
 

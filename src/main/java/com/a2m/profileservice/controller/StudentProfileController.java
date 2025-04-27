@@ -3,9 +3,11 @@ package com.a2m.profileservice.controller;
 import com.a2m.profileservice.dto.ApiResponse;
 import com.a2m.profileservice.dto.student_profilesDTOs.student_profilesDTO;
 import com.a2m.profileservice.dto.student_profilesDTOs.student_profilesDTOForCreate;
+import com.a2m.profileservice.dto.student_profilesDTOs.student_profilesDTOForUpdate;
 import com.a2m.profileservice.service.ImageKitUploadService;
 import com.a2m.profileservice.service.StudentProfileService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.PUT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -48,9 +50,10 @@ public class StudentProfileController {
         return ResponseEntity.ok(api);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<student_profilesDTO>> getStudentProfiles(@PathVariable String id) {
-        var api = studentProfileService.getProfileStudentById(id);
+    @GetMapping("/viewprofile")
+    public ResponseEntity<ApiResponse<student_profilesDTO>> getStudentProfiles(HttpServletRequest request) {
+        String userId = (String) request.getAttribute("userId");
+        var api = studentProfileService.getProfileStudentById(userId);
         return ResponseEntity.ok(api);
     }
 
@@ -62,9 +65,10 @@ public class StudentProfileController {
 
     //done
     @PostMapping(value = "/uploadAvatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> uploadAvatar(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> uploadAvatar(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+        String userId = (String) request.getAttribute("userId");
         try {
-            String result = imageKitUploadService.uploadImage(file);
+            String result = imageKitUploadService.uploadImage(file, userId);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Upload thất bại: " + e.getMessage());
@@ -73,8 +77,9 @@ public class StudentProfileController {
 
     //done
     @PostMapping(value = "/uploadStudentCard", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadMultipleImages(@RequestParam("files") List<MultipartFile> files) {
-        String response = imageKitUploadService.uploadImages(files);
+    public ResponseEntity<String> uploadMultipleImages(@RequestParam("files") List<MultipartFile> files, HttpServletRequest request) {
+        String userId = (String) request.getAttribute("userId");
+        String response = imageKitUploadService.uploadImages(files, userId);
         return ResponseEntity.ok(response);
     }
 
@@ -85,6 +90,15 @@ public class StudentProfileController {
         var api = studentProfileService.CreateProfileStudent(studentProfilesDTO, userId);
         return ResponseEntity.ok(api);
     }
+
+    @PutMapping("/update")
+    public ResponseEntity<?> UpdateProfile(@RequestBody student_profilesDTOForUpdate studentProfilesDTO, HttpServletRequest request) {
+        String userId = (String) request.getAttribute("userId");
+        var api = studentProfileService.UpdateProfileStudent(studentProfilesDTO, userId);
+        return ResponseEntity.ok(api);
+    }
+
+
 
 
 }

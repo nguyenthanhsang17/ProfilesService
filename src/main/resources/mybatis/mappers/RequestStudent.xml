@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.a2m.profileservice.mapper.RequestStudentMapper">
+
+    <!-- Map kết quả từ cơ sở dữ liệu thành User -->
+    <resultMap id="requestStudentsResultMap" type="RequestStudents">
+        <id property="requestId" column="request_id"/>
+        <result property="studentId" column="student_id"/>
+        <result property="reason" column="reason"/>
+        <result property="sendTime" column="send_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+        <result property="status" column="status"/>
+        <result property="isDeleted" column="is_deleted" javaType="boolean" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <select id="checkRequestStudentExists" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM request_students
+        WHERE student_id = #{student_id}
+          AND status = 'pending'
+          AND is_deleted = 0
+    </select>
+
+    <select id="checkRequestStudentAlreadyRegistered" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM request_students
+        WHERE student_id = #{student_id}
+          AND status = 'pending' OR status = 'approve'
+          AND is_deleted = 0
+    </select>
+
+
+
+    <insert id="SendRequest">
+        INSERT INTO request_students
+            (request_id, student_id, reason, send_time, status, is_deleted)
+        VALUES
+            (uuid(), #{student_id},null, NOW(), 'pending', 0)
+    </insert>
+
+
+
+
+
+
+
+</mapper>

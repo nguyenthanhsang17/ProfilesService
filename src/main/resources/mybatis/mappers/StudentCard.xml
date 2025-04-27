@@ -24,6 +24,13 @@
     </select>
 
 
+    <update id="DeleteStudentCard" parameterType="String">
+        UPDATE student_cards
+        SET is_deleted = 1
+        WHERE card_id = #{id}
+    </update>
+
+
 
 
 

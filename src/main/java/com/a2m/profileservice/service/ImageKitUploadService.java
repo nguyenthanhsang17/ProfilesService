@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface ImageKitUploadService {
-    public String uploadImage(MultipartFile file);
-    public String uploadImages(List<MultipartFile> files);
+    public String uploadImage(MultipartFile file, String profileId);
+    public String uploadImages(List<MultipartFile> files, String profileId);
+    public String uploadCV(MultipartFile file, String profileId);
 }

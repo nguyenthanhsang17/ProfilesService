@@ -11,4 +11,5 @@ public interface student_profilesMapper {
     public student_profiles getById(String id);
     public int checkExits(String id);
     int createStudentProfile(student_profiles studentProfiles);
+    public int updateStudentProfile(student_profiles studentProfiles);
 }
