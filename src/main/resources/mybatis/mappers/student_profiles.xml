@@ -48,7 +48,7 @@
         VALUES (
         #{profileId}, #{fullName}, #{major}, #{dateOfBirth}, #{address},
         #{university}, #{avatarUrl}, #{academicYearStart}, #{academicYearEnd},
-        #{phoneNumber}, 1, 1,
+        #{phoneNumber}, 0, 1,
         0, <!-- isDeleted = 0 -->
         NOW(), <!-- createdAt = current time -->
         NOW() <!-- updatedAt = NULL -->

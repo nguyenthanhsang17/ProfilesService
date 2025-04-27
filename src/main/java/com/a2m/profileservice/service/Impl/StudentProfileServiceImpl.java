@@ -162,7 +162,9 @@ public class StudentProfileServiceImpl implements StudentProfileService {
         studentProfiles.setAvatarUrl(student_profilesDTO.getAvatarUrl());
         studentProfiles.setPhoneNumber(student_profilesDTO.getPhoneNumber());
         studentProfiles.setAcademicYearStart(student_profilesDTO.getAcademicYearStart());
-        studentProfiles.setAcademicYearEnd(student_profilesDTO.getAcademicYearEnd());
+
+        studentProfiles.setAcademicYearEnd(student_profilesDTO.getAcademicYearEnd().orElse(null));
+
 
         int row = mapper.updateStudentProfile(studentProfiles);
         if (row <= 0) {
@@ -230,7 +232,8 @@ public class StudentProfileServiceImpl implements StudentProfileService {
         studentProfiles.setUniversity(student_profiles.getUniversity());
         studentProfiles.setAvatarUrl(student_profiles.getAvatarUrl());
         studentProfiles.setAcademicYearStart(student_profiles.getAcademicYearStart());
-        studentProfiles.setAcademicYearEnd(student_profiles.getAcademicYearEnd());
+        studentProfiles.setAcademicYearEnd(student_profiles.getAcademicYearEnd().orElse(null));
+
         studentProfiles.setPhoneNumber(student_profiles.getPhoneNumber());
 
         var u = mapper.createStudentProfile(studentProfiles);

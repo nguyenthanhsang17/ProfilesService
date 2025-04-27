@@ -21,7 +21,7 @@ public class student_profilesDTOForUpdate {
     private String university;
     private String avatarUrl;
     private Date academicYearStart;
-    private Date academicYearEnd;
+    private Optional<Date>  academicYearEnd;
     private String phoneNumber;
 
     private List<String> StudentCardUrlId;

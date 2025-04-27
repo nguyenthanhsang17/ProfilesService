@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Data
 @Getter
@@ -19,7 +20,7 @@ public class student_profilesDTOForCreate {
     private String university;
     private String avatarUrl;
     private Date academicYearStart;
-    private Date academicYearEnd;
+    private Optional<Date> academicYearEnd;
     private String phoneNumber;
 
     private List<String> StudentCardUrl;
