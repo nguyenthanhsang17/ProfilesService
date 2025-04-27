@@ -38,6 +38,24 @@
             (uuid(), #{student_id},null, NOW(), 'pending', 0)
     </insert>
 
+    <select id="GetRequestStudent" parameterType="string" resultType="RequestStudents" resultMap="requestStudentsResultMap">
+        SELECT
+            request_id,
+            student_id,
+            reason,
+            send_time,
+            status,
+            is_deleted
+        FROM
+            request_students
+        WHERE
+            student_id = #{student_id}
+          AND is_deleted = 0
+        ORDER BY
+            send_time DESC
+            LIMIT 1
+    </select>
+
 
 
 

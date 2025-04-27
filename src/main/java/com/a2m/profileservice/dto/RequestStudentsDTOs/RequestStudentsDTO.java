@@ -1,12 +1,14 @@
-package com.a2m.profileservice.model;
+package com.a2m.profileservice.dto.RequestStudentsDTOs;
 
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Date;
 @Data
 @ToString
-public class RequestStudents {
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class RequestStudentsDTO {
     private String requestId;
     private String studentId;
     private String reason;

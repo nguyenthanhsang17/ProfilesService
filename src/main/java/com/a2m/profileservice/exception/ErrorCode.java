@@ -34,6 +34,7 @@ public enum ErrorCode {
 
     //sang
     REQUEST_STUDENT_ALREADY_REGISTERED(6001, "Register Student already registered", HttpStatus.BAD_REQUEST),
+    REQUEST_STUDENT_NOT_REGISTERED(6002, "Student not registered", HttpStatus.BAD_REQUEST),
     CV_NOT_FOUND(6002, "CV not found", HttpStatus.NOT_FOUND),
     CV_NOT_OWNER(6003, "CV not OWNER", HttpStatus.BAD_REQUEST),
     // 9xxx – System
