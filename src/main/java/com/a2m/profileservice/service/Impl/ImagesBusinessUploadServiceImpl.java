@@ -77,8 +77,14 @@ public class ImagesBusinessUploadServiceImpl implements ImagesBusinessUploadServ
                 // Parse JSON để lấy URL
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode root = mapper.readTree(response.getBody());
-                String url = root.get("url").asText();
-                imageUrls.add(url);
+                if (root.has("url")) {
+                    String url = root.get("url").asText();
+                    imageUrls.add(url);
+                } else {
+                    System.err.println("No 'url' field in response: " + response.getBody());
+                    imageUrls.add("Upload failed: " + file.getOriginalFilename());
+                }
+
 
             } catch (Exception e) {
                 e.printStackTrace();

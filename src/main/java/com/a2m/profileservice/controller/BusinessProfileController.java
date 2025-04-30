@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/business")
+@RequestMapping("/api/v1/business")
 @AllArgsConstructor
 public class BusinessProfileController {
 
@@ -22,15 +22,31 @@ public class BusinessProfileController {
     ){
 //        String authHeader = request.getHeader("Authorization");
 //        System.out.println("Auth header = " + authHeader);
-        String role = (String) jwtUtil.extractRoleFromToken(request.getHeader("Authorization").substring(7));
-        if(!role.equals("business")) {
+        String token = request.getHeader("Authorization").substring(7);
+        String role = jwtUtil.extractRoleFromToken(token);
+
+        if (role == null) {
+            return ResponseEntity.status(403).body(ApiResponse.<business_profiles>builder()
+                    .code(403)
+                    .message("Role not found in token")
+                    .build());
+        }
+
+        if (!"BUSINESS".equals(role)) {
             return ResponseEntity.status(403).body(ApiResponse.<business_profiles>builder()
                     .code(403)
                     .message("You are not authorized to perform this action")
                     .build());
         }
 
-        String profileId = (String) jwtUtil.extractUserId(request.getHeader("Authorization").substring(7));
+        String profileId = jwtUtil.extractUserId(token);
+
+        if(profileId == null) {
+            return ResponseEntity.status(403).body(ApiResponse.<business_profiles>builder()
+                    .code(403)
+                    .message("Profile ID not found in token")
+                    .build());
+        }
 
         System.out.println("Profile id = " + profileId);
 
@@ -44,20 +60,35 @@ public class BusinessProfileController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<ApiResponse<business_profiles>> getBussinessProfile(
-            HttpServletRequest request
-    ){
-        String role = (String) jwtUtil.extractRoleFromToken(request.getHeader("Authorization").substring(7));
-        if(!role.equals("business")) {
+    public ResponseEntity<ApiResponse<business_profiles>> getBussinessProfile(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body(ApiResponse.<business_profiles>builder()
+                    .code(401)
+                    .message("Missing or invalid Authorization header")
+                    .build());
+        }
+
+        String token = authHeader.substring(7);
+        String role = jwtUtil.extractRoleFromToken(token);
+
+        if (role == null) {
+            return ResponseEntity.status(403).body(ApiResponse.<business_profiles>builder()
+                    .code(403)
+                    .message("Role not found in token")
+                    .build());
+        }
+
+        if (!"BUSINESS".equals(role)) {
             return ResponseEntity.status(403).body(ApiResponse.<business_profiles>builder()
                     .code(403)
                     .message("You are not authorized to perform this action")
                     .build());
         }
 
-        String profileId = (String) jwtUtil.extractUserId(request.getHeader("Authorization").substring(7));
-
+        String profileId = jwtUtil.extractUserId(token);
         business_profiles existingBusiness = businessProfileService.getBusinessProfileById(profileId);
+
         ApiResponse<business_profiles> response = ApiResponse.<business_profiles>builder()
                 .code(1000)
                 .data(existingBusiness)
@@ -66,6 +97,7 @@ public class BusinessProfileController {
 
         return ResponseEntity.ok(response);
     }
+
 
     @PutMapping("/update")
     public ResponseEntity<ApiResponse<business_profiles>> updateBusinessProfile(

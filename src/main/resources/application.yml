@@ -2,7 +2,7 @@ spring:
   application:
     name: profile-service
   datasource:
-    url: jdbc:mariadb://3.112.235.50:3306/profile_service
+    url: jdbc:mariadb://54.251.197.30:3306/profile_service
     username: root
     password: fred
     driver-class-name: org.mariadb.jdbc.Driver
@@ -16,7 +16,7 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://3.112.235.50:8761/eureka
+      defaultZone: http://18.140.1.2:8761/eureka
     register-with-eureka: true
     fetch-registry: true
 

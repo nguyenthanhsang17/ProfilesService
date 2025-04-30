@@ -20,9 +20,11 @@ public class BusinessProfileServiceImpl implements BusinessProfileService {
     @Override
     public business_profiles businessVerifycation(business_profiles businessProfiles, String profileId) {
         Optional<String> existingTaxCode = businessProfilesMapper.findByTaxCode(businessProfiles.getTaxCode());
-        if(existingTaxCode.isPresent()) {
+        business_profiles existingBusiness = businessProfilesMapper.getBusinessProfileById(profileId);
+        if(existingTaxCode.isPresent() || existingBusiness != null) {
             throw new AppException(ErrorCode.BUSINESS_EXISTED);
         }
+
         if(businessProfiles.getCreatedAt() == null) {
             businessProfiles.setCreatedAt(LocalDateTime.now());
         }
