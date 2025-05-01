@@ -2,6 +2,8 @@ package com.a2m.profileservice.model;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -12,4 +14,5 @@ public class images_business {
     private String businessId;
     private String imageUrl;
     private boolean isDeleted;
+    private LocalDateTime createdAt;
 }

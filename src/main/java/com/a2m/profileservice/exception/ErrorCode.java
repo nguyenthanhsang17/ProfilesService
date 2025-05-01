@@ -2,12 +2,16 @@ package com.a2m.profileservice.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
+
 @Getter
 public enum ErrorCode {
     // 1xxx – Auth
-    USER_EXISTED(1001, "User already exists", HttpStatus.BAD_REQUEST),
+    BUSINESS_EXISTED(1001, "Business already exists", HttpStatus.BAD_REQUEST),
+    BUSINESS_NOT_FOUND(1002, "Business not found", HttpStatus.NOT_FOUND),
+    BUSINESS_IMAGE_NOT_FOUND(1003, "Business image not found", HttpStatus.NOT_FOUND),
+    INVALID_CREDENTIALS(1004, "Username or password is incorrect", HttpStatus.UNAUTHORIZED),
+    BUSINESS_NOT_AUTHORIZED(1005, "Business not authorized", HttpStatus.FORBIDDEN),
     USER_NOT_FOUND(1002, "User not found", HttpStatus.NOT_FOUND),
-    INVALID_CREDENTIALS(1003, "Username or password is incorrect", HttpStatus.UNAUTHORIZED),
     // 2xxx – Validation
     VALIDATION_ERROR(2001, "Invalid input: {field}", HttpStatus.BAD_REQUEST),
 
@@ -31,12 +35,12 @@ public enum ErrorCode {
     INTERNSHIP_CREATION_FAILED(5007, "Failed to create internship", HttpStatus.INTERNAL_SERVER_ERROR),
     APPLICATION_DUPLICATE(5008, "Application already exists", HttpStatus.CONFLICT),
     ROLE_ASSIGNMENT_FAILED(5009, "Failed to assign role", HttpStatus.INTERNAL_SERVER_ERROR),
-
     //sang
     REQUEST_STUDENT_ALREADY_REGISTERED(6001, "Register Student already registered", HttpStatus.BAD_REQUEST),
     REQUEST_STUDENT_NOT_REGISTERED(6002, "Student not registered", HttpStatus.BAD_REQUEST),
     CV_NOT_FOUND(6002, "CV not found", HttpStatus.NOT_FOUND),
     CV_NOT_OWNER(6003, "CV not OWNER", HttpStatus.BAD_REQUEST),
+
     // 9xxx – System
     INTERNAL_ERROR(9999, "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR);
 
