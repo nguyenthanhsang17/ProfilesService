@@ -1,16 +1,18 @@
-package com.a2m.profileservice.model;
+package com.a2m.profileservice.dto.student_profilesDTOs;
 
+import com.a2m.profileservice.dto.StudentCardDTO.StudentCardDTO;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 
+@Data
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString
-public class student_profiles {
+public class student_profilesDTO {
     private String profileId;
     private String fullName;
     private String major;
@@ -26,4 +28,6 @@ public class student_profiles {
     private boolean isDeleted;
     private Date createdAt;
     private Date updatedAt;
+
+    List<StudentCardDTO> studentCardDTOS;
 }
