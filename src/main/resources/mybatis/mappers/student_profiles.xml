@@ -41,13 +41,13 @@
 
     <insert id="createStudentProfile" parameterType="student_profiles">
         INSERT INTO profile_service.student_profiles (
-        profile_id, full_name, major, date_of_birth, address, university,
-        avatar_url, academic_year_start, academic_year_end, phone_number,
+        profile_id, full_name, major, date_of_birth, address, university
+        , academic_year_start, academic_year_end, phone_number,
         is_approved, status, is_deleted, created_at, updated_at
         )
         VALUES (
         #{profileId}, #{fullName}, #{major}, #{dateOfBirth}, #{address},
-        #{university}, #{avatarUrl}, #{academicYearStart}, #{academicYearEnd},
+        #{university}, #{academicYearStart}, #{academicYearEnd},
         #{phoneNumber}, 0, 1,
         0, <!-- isDeleted = 0 -->
         NOW(), <!-- createdAt = current time -->
@@ -69,6 +69,14 @@
         phone_number = #{phoneNumber},
         updated_at = NOW()  <!-- Cập nhật trường updated_at thành thời gian hiện tại -->
         WHERE profile_id = #{profileId}
+    </update>
+
+
+    <update id="UpdateAvatar">
+        UPDATE student_profiles
+        SET avatar_url = #{avatar},
+            updated_at = NOW()
+        WHERE profile_id = #{id}
     </update>
 
 

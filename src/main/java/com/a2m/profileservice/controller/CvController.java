@@ -8,6 +8,7 @@ import com.a2m.profileservice.service.CVSerrvice;
 import com.a2m.profileservice.service.ImageKitUploadService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.QueryParam;
 import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -27,9 +28,9 @@ public class CvController {
     }
 
     @GetMapping("/getcvByid")
-    public ResponseEntity<?> GetCvByUserID(HttpServletRequest request) {
+    public ResponseEntity<?> GetCvByUserID(HttpServletRequest request, @RequestParam(name = "search", required = false) String search) {
         String userId = (String) request.getAttribute("userId");
-        var api = cvSerrvice.getCvByUserID(userId);
+        var api = cvSerrvice.getCvByUserID(userId, search);
         return ResponseEntity.ok(api);
     }
 

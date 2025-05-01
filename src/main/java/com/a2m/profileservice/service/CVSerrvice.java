@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface CVSerrvice {
-    public ApiResponse<List<cvDTO>> getCvByUserID(String id);
+    public ApiResponse<List<cvDTO>> getCvByUserID(String id, String search);
     public ApiResponse<String> CreateCv(cvDTOForCreate cvDTO , String id);
     public ApiResponse<Object> deleteCv(String cvid);
     public ApiResponse<Object> updateCv(cvDTOForUpdate cvDTO);

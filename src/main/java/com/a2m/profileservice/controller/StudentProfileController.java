@@ -67,6 +67,7 @@ public class StudentProfileController {
     @PostMapping(value = "/uploadAvatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadAvatar(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
         String userId = (String) request.getAttribute("userId");
+        System.out.println("Uploading avatar"+userId);
         try {
             String result = imageKitUploadService.uploadImage(file, userId);
             return ResponseEntity.ok(result);
@@ -86,8 +87,16 @@ public class StudentProfileController {
     @PostMapping(value = "/create")
     public ResponseEntity<ApiResponse<student_profilesDTOForCreate>> CreateProfile(@RequestBody student_profilesDTOForCreate studentProfilesDTO, HttpServletRequest request) {
         String userId = (String) request.getAttribute("userId");
+        System.out.println("sang"+ userId);
         String email = (String) request.getAttribute("email");
         var api = studentProfileService.CreateProfileStudent(studentProfilesDTO, userId);
+        return ResponseEntity.ok(api);
+    }
+
+    @PutMapping(value = "/updateurlavatar/{url}")
+    public ResponseEntity<?> update(HttpServletRequest request, @PathVariable String url) {
+        String userId = (String) request.getAttribute("userId");
+        var api = studentProfileService.updateAvatar(url, userId);
         return ResponseEntity.ok(api);
     }
 

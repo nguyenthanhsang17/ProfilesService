@@ -9,7 +9,7 @@ import java.util.List;
 
 @Mapper
 public interface CvMapper {
-    List<cv> selectAllCvByStudentId(String studentId);
+    List<cv> selectAllCvByStudentId(String studentId, String search);
     int createCv(cv cv);
     int updateCv(cv cv);
     cv selectCvByCvId(String cvid);

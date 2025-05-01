@@ -159,7 +159,6 @@ public class StudentProfileServiceImpl implements StudentProfileService {
         studentProfiles.setDateOfBirth(student_profilesDTO.getDateOfBirth());
         studentProfiles.setAddress(student_profilesDTO.getAddress());
         studentProfiles.setUniversity(student_profilesDTO.getUniversity());
-        studentProfiles.setAvatarUrl(student_profilesDTO.getAvatarUrl());
         studentProfiles.setPhoneNumber(student_profilesDTO.getPhoneNumber());
         studentProfiles.setAcademicYearStart(student_profilesDTO.getAcademicYearStart());
 
@@ -182,8 +181,12 @@ public class StudentProfileServiceImpl implements StudentProfileService {
         List<String> studentcardidsold = new ArrayList<>();
         studentcardidsold = stdcard.stream().map(s -> s.getCardId()).collect(Collectors.toList());
         System.out.println("cardid old"+studentcardidsold);
-        System.out.println("cardid new"+student_profilesDTO.getStudentCardUrlId()==null?"null":student_profilesDTO.getStudentCardUrlId().size());
-        List<String> diff = getDifference(studentcardidsold, student_profilesDTO.getStudentCardUrlId());
+        List<String> studentCardUrlId = student_profilesDTO.getStudentCardUrlId();
+        if (studentCardUrlId == null) {
+            studentCardUrlId = new ArrayList<>(); // hoặc return luôn nếu null là hợp lệ
+        }
+        List<String> diff = getDifference(studentcardidsold, studentCardUrlId);
+
         System.out.println("cardid diff: "+diff.size());
         for (String s : diff) {
             int r = studentCardMapper.DeleteStudentCard(s);
@@ -192,15 +195,6 @@ public class StudentProfileServiceImpl implements StudentProfileService {
             }
         }
 
-        if (student_profilesDTO.getStudentCardUrlNew() != null && student_profilesDTO.getStudentCardUrlNew().isPresent()) {
-            List<String> temp = student_profilesDTO.getStudentCardUrlNew().get();
-            for (String s : temp) {
-                int r = studentCardMapper.CreateStudentCard(StudentCard.builder().studentId(id).studentCardUrl(s).build());
-                if (r != 1) {
-                    throw new AppException(ErrorCode.DATABASE_CONNECTION_FAILED);
-                }
-            }
-        }
 
         ApiResponse<Object> apiResponse = new ApiResponse<>();
         apiResponse.setCode(200);
@@ -230,7 +224,7 @@ public class StudentProfileServiceImpl implements StudentProfileService {
         studentProfiles.setDateOfBirth(student_profiles.getDateOfBirth());
         studentProfiles.setAddress(student_profiles.getAddress());
         studentProfiles.setUniversity(student_profiles.getUniversity());
-        studentProfiles.setAvatarUrl(student_profiles.getAvatarUrl());
+//        studentProfiles.setAvatarUrl(student_profiles.getAvatarUrl());
         studentProfiles.setAcademicYearStart(student_profiles.getAcademicYearStart());
         studentProfiles.setAcademicYearEnd(student_profiles.getAcademicYearEnd().orElse(null));
 
@@ -238,27 +232,19 @@ public class StudentProfileServiceImpl implements StudentProfileService {
 
         var u = mapper.createStudentProfile(studentProfiles);
 
-        if (u > 0) {
-            List<StudentCard> studentCards = new ArrayList<>();
-            List<String> studentCardUrls = student_profiles.getStudentCardUrl() != null
-                    ? student_profiles.getStudentCardUrl()
-                    : Collections.emptyList(); // Nếu null, trả về danh sách rỗng
-
-            studentCards = student_profiles.getStudentCardUrl().stream()
-                    .map(st -> StudentCard.builder().studentId(id).studentCardUrl(st).build())
-                    .collect(Collectors.toList());
-
-            for (StudentCard studentCard : studentCards) {
-                studentCardMapper.CreateStudentCard(studentCard);
-            }
-        } else {
-            throw new AppException(ErrorCode.SQL_SYNTAX_ERROR);
-        }
-
         ApiResponse<student_profilesDTOForCreate> apiResponse = new ApiResponse<>();
         apiResponse.setData(student_profiles);
         apiResponse.setMessage("Create Success");
         apiResponse.setCode(200);
+        return apiResponse;
+    }
+
+    @Override
+    public ApiResponse<?> updateAvatar(String id, String url) {
+        int row = mapper.UpdateAvatar(id, url);
+        ApiResponse<?> apiResponse = new ApiResponse<>();
+        apiResponse.setCode(200);
+        apiResponse.setMessage("Update Success");
         return apiResponse;
     }
 }

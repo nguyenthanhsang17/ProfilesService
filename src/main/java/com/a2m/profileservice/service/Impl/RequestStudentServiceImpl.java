@@ -39,7 +39,7 @@ public class RequestStudentServiceImpl implements RequestStudentService {
     @Override
     public ApiResponse<RequestStudentsDTO> GetRequestStudent(String student_id) {
         var requestStudents = requestStudentMapper.GetRequestStudent(student_id);
-        System.out.println(requestStudents.toString());
+        //System.out.println(requestStudents.toString());
         if (requestStudents == null) {
             throw new AppException(ErrorCode.REQUEST_STUDENT_NOT_REGISTERED);
         }

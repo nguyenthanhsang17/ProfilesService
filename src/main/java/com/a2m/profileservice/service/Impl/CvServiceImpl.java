@@ -29,8 +29,8 @@ public class CvServiceImpl implements CVSerrvice {
     }
 
     @Override
-    public ApiResponse<List<cvDTO>> getCvByUserID(String id) {
-        List<com.a2m.profileservice.model.cv> cvs = cvMapper.selectAllCvByStudentId(id);
+    public ApiResponse<List<cvDTO>> getCvByUserID(String id, String search) {
+        List<com.a2m.profileservice.model.cv> cvs = cvMapper.selectAllCvByStudentId(id, search);
         if(cvs == null || cvs.size() <= 0) {
             throw new AppException(ErrorCode.CV_NOT_FOUND);
         }

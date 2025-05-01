@@ -18,11 +18,8 @@ public class student_profilesDTOForCreate {
     private Date dateOfBirth;
     private String address;
     private String university;
-    private String avatarUrl;
     private Date academicYearStart;
     private Optional<Date> academicYearEnd;
     private String phoneNumber;
-
-    private List<String> StudentCardUrl;
 
 }

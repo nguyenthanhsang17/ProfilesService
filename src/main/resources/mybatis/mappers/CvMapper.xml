@@ -18,8 +18,10 @@
         SELECT *
         FROM cvs
         WHERE student_id = #{studentId}
+          AND title LIKE CONCAT('%', #{search}, '%')
           AND is_deleted = 0
     </select>
+
 
 
     <insert id="createCv" useGeneratedKeys="true" keyProperty="cvId">
