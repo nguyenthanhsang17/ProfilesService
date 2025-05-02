@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -58,26 +59,31 @@ public class BusinessProfileServiceImpl implements BusinessProfileService {
     }
 
     @Override
-    public business_profiles updateBusinessProfile(business_profiles businessProfiles) {
-        business_profiles existingBusinessProfile = businessProfilesMapper.getBusinessProfileById(businessProfiles.getProfileId());
+    public business_profiles updateBusinessProfile(business_profiles businessProfiles, String businessId) {
+        business_profiles existingBusinessProfile = businessProfilesMapper.getBusinessProfileById(businessId);
         if(existingBusinessProfile == null){
             throw new AppException(ErrorCode.BUSINESS_NOT_FOUND);
         }
 
-        if(existingBusinessProfile.isApproved() == false){
+        if(!existingBusinessProfile.isApproved()){
             throw new AppException(ErrorCode.BUSINESS_NOT_AUTHORIZED);
         } else {
-            if(existingBusinessProfile.getStatus() == "active") { // nếu đã acp thì không cho sửa
+            if(Objects.equals(existingBusinessProfile.getStatus(), "active")) { // nếu đã acp thì không cho sửa
                 throw new AppException(ErrorCode.BUSINESS_NOT_AUTHORIZED);
             }else {
-                if(businessProfiles.getUpdatedAt() == null) {
-                    businessProfiles.setUpdatedAt(LocalDateTime.now());
-                }
+                existingBusinessProfile.setCompanyName(businessProfiles.getCompanyName());
+                existingBusinessProfile.setIndustry(businessProfiles.getIndustry());
+                existingBusinessProfile.setCompanyInfo(businessProfiles.getCompanyInfo());
+                existingBusinessProfile.setWebsiteUrl(businessProfiles.getWebsiteUrl());
+                existingBusinessProfile.setEmail(businessProfiles.getEmail());
+                existingBusinessProfile.setPhoneNumber(businessProfiles.getPhoneNumber());
+                existingBusinessProfile.setAddress(businessProfiles.getAddress());
+                existingBusinessProfile.setUpdatedAt(LocalDateTime.now());
 
-                businessProfilesMapper.updateBusinessProfile(businessProfiles);
             }
         }
+        businessProfilesMapper.updateBusinessProfile(existingBusinessProfile);
 
-        return businessProfiles;
+        return existingBusinessProfile;
     }
 }

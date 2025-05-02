@@ -62,7 +62,8 @@
             email = #{email},
             phone_number = #{phoneNumber},
             address = #{address},
-            updated_at = NOW()
+            is_approved = false,
+            status = null
         WHERE profile_id = #{profileId}
         AND is_deleted = false
     </update>

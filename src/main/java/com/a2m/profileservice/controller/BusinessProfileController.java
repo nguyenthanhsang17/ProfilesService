@@ -101,16 +101,37 @@ public class BusinessProfileController {
 
     @PutMapping("/update")
     public ResponseEntity<ApiResponse<business_profiles>> updateBusinessProfile(
-            @RequestBody business_profiles businessProfiles
+            @RequestBody business_profiles businessProfiles,
+            HttpServletRequest request
     ){
-        business_profiles updatedBusiness = businessProfileService.updateBusinessProfile(businessProfiles);
-        ApiResponse<business_profiles> response = ApiResponse.<business_profiles>builder()
-                .code(1000)
-                .message("Business profile updated successfully")
-                .data(updatedBusiness)
-                .build();
-        return ResponseEntity.ok(response);
+        try {
+            String authHeader = request.getHeader("Authorization");
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(401).body(ApiResponse.<business_profiles>builder()
+                        .code(401)
+                        .message("Missing or invalid Authorization header")
+                        .build());
+            }
+
+            String businessId = jwtUtil.extractUserId(authHeader.substring(7));
+            business_profiles updatedBusiness = businessProfileService.updateBusinessProfile(businessProfiles, businessId);
+
+            ApiResponse<business_profiles> response = ApiResponse.<business_profiles>builder()
+                    .code(1000)
+                    .message("Business profile updated successfully")
+                    .data(updatedBusiness)
+                    .build();
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace(); // để thấy lỗi 500 thật sự
+            return ResponseEntity.status(500).body(ApiResponse.<business_profiles>builder()
+                    .code(500)
+                    .message("Internal Server Error: " + e.getMessage())
+                    .build());
+        }
     }
+
 
 
 }

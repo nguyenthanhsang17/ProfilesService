@@ -13,5 +13,5 @@ public interface BusinessProfileService {
 
     business_profiles getBusinessProfileById(@Param("profileId") String profileId);
 
-    business_profiles updateBusinessProfile(business_profiles businessProfiles);
+    business_profiles updateBusinessProfile(business_profiles businessProfiles, @Param("profileId") String businessId);
 }

@@ -16,5 +16,5 @@ public interface business_profilesMapper {
 
     business_profiles getBusinessProfileById(@Param("profileId") String profileId);
 
-    business_profiles updateBusinessProfile(business_profiles businessProfiles);
+    int updateBusinessProfile(business_profiles businessProfiles);
 }
