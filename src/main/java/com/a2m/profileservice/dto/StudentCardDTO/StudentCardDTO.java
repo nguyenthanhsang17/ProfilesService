@@ -1,16 +1,16 @@
-package com.a2m.profileservice.model;
+package com.a2m.profileservice.dto.StudentCardDTO;
 
 import lombok.*;
 
 @Data
+@Getter
+@Setter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Getter
-@Setter
-public class StudentCard {
+public class StudentCardDTO {
     private String cardId;
-    private String studentId;
     private String studentCardUrl;
     private boolean isDeleted;
 }

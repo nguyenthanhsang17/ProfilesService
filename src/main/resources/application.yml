@@ -34,6 +34,8 @@ server:
 
 springdoc:
   api-docs:
-    path: /v3/api-docs
+    enabled: true  # Bật API docs
+    path: /v3/api-docs  # Đặt đường dẫn API docs
   swagger-ui:
     path: /swagger-ui.html
+
