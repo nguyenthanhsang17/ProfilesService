@@ -2,17 +2,18 @@ package com.a2m.profileservice.model;
 
 import lombok.*;
 
-import javax.xml.crypto.Data;
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RequestBusiness {
+public class RequestBusinesses {
     private String requestId;
     private String businessId;
     private String reason;
-    private Data sendTime;
+    private LocalDateTime sendTime;
     private String status; // "pending", "approve", "reject"
     private boolean isDeleted;
 }
