@@ -10,7 +10,10 @@ import java.util.List;
 public interface images_businessMapper {
 
     int insertImagesBusiness(images_business imagesBusiness);
+    int deleteImagesBusinessById(@Param("imageId") String imageId);
+
     List<images_business> getImagesBusinessByBusinessId(@Param("businessId") String businessId);
     images_business getFirstImageBusinessByBusinessId(@Param("businessId") String businessId);
+    images_business getImagesBusinessByImageId(@Param("imageId") String imageId);
 
 }

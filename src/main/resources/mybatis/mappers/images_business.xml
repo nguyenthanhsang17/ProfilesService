@@ -18,6 +18,13 @@
         VALUES (#{imageId}, #{businessId}, #{imageUrl}, #{isDeleted}, #{createdAt})
     </insert>
 
+    <!-- Xoá ảnh của business -->
+    <update id="deleteImagesBusinessById" parameterType="String">
+        UPDATE profile_service.images_business
+        SET is_deleted = true
+        WHERE image_id = #{imageId}
+    </update>
+
     <!-- Lấy danh sách ảnh của business -->
     <select id="getImagesBusinessByBusinessId" parameterType="String" resultMap="ImagesBusinessResultMap">
         SELECT * FROM profile_service.images_business
@@ -30,5 +37,11 @@
         WHERE business_id = #{businessId} AND is_deleted = false
         ORDER BY created_at ASC
         LIMIT 1
+    </select>
+
+    <!-- Lấy ảnh theo imageId -->
+    <select id="getImagesBusinessByImageId" parameterType="String" resultMap="ImagesBusinessResultMap">
+        SELECT * FROM profile_service.images_business
+        WHERE image_id = #{imageId} AND is_deleted = false
     </select>
 </mapper>

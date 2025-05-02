@@ -36,6 +36,20 @@ public class ImagesBusinessController {
         return ResponseEntity.ok(response.getData());
     }
 
+    @PutMapping("/delete/{imageId}")
+    public ResponseEntity<?> deleteImagesBusiness(
+            @PathVariable("imageId") String imageId
+    ) {
+        int res = imagesBusinessUploadService.deleteImagesBusiness(imageId);
+        ApiResponse<Integer> response = ApiResponse.<Integer>builder()
+                .code(1000)
+                .message("Delete image successfully")
+                .data(res)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/all")
     public ResponseEntity<?> getAllImagesBusinessByBusinessId(
             HttpServletRequest request

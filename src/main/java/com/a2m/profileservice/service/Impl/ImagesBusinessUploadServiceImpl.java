@@ -108,6 +108,20 @@ public class ImagesBusinessUploadServiceImpl implements ImagesBusinessUploadServ
     }
 
     @Override
+    public int deleteImagesBusiness(String imageId) {
+        images_business existingImage = imagesBusinessMapper.getImagesBusinessByImageId(imageId);
+        if(existingImage == null) {
+            throw new AppException(ErrorCode.BUSINESS_IMAGE_NOT_FOUND);
+        }
+
+        int result = imagesBusinessMapper.deleteImagesBusinessById(imageId);
+        if(result == 0) {
+            throw new AppException(ErrorCode.BUSINESS_IMAGE_NOT_FOUND);
+        }
+        return result;
+    }
+
+    @Override
     public List<images_business> getImagesBusinessByBusinessId(String businessId) {
         List<images_business> imagesBusinessList = imagesBusinessMapper.getImagesBusinessByBusinessId(businessId);
         if(imagesBusinessList.isEmpty()) {
