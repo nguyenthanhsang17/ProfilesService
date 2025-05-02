@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.a2m.profileservice.mapper.images_businessMapper">
+<mapper namespace="com.a2m.profileservice.mapper.ImagesBusinessMapper">
 
-    <resultMap id="ImagesBusinessResultMap" type="com.a2m.profileservice.model.images_business"
+    <resultMap id="ImagesBusinessResultMap" type="com.a2m.profileservice.model.ImagesBusiness"
         >
         <id property="imageId" column="image_id" />
         <result property="businessId" column="business_id" />
@@ -13,7 +13,7 @@
     </resultMap>
 
     <!-- Thêm ảnh cho business -->
-    <insert id="insertImagesBusiness" parameterType="com.a2m.profileservice.model.images_business">
+    <insert id="insertImagesBusiness" parameterType="com.a2m.profileservice.model.ImagesBusiness">
         INSERT INTO profile_service.images_business (image_id,business_id, image_url, is_deleted, created_at)
         VALUES (#{imageId}, #{businessId}, #{imageUrl}, #{isDeleted}, #{createdAt})
     </insert>

@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class images_business {
+public class ImagesBusiness {
     private String imageId;
     private String businessId;
     private String imageUrl;

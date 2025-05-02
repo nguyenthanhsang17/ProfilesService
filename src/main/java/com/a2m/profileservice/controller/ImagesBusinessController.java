@@ -2,7 +2,7 @@ package com.a2m.profileservice.controller;
 
 import com.a2m.profileservice.Authentication.JwtUtil;
 import com.a2m.profileservice.dto.ApiResponse;
-import com.a2m.profileservice.model.images_business;
+import com.a2m.profileservice.model.ImagesBusiness;
 import com.a2m.profileservice.service.ImagesBusinessUploadService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -26,8 +26,8 @@ public class ImagesBusinessController {
     ) {
         String businessId = (String) jwtUtil.extractUserId(request.getHeader("Authorization").substring(7));
 
-        List<images_business> res = imagesBusinessUploadService.addImagesBusiness(files, businessId);
-        ApiResponse<List<images_business>> response = ApiResponse.<List<images_business>>builder()
+        List<ImagesBusiness> res = imagesBusinessUploadService.addImagesBusiness(files, businessId);
+        ApiResponse<List<ImagesBusiness>> response = ApiResponse.<List<ImagesBusiness>>builder()
                 .code(1000)
                 .message("Images uploaded successfully")
                 .data(res)
@@ -56,8 +56,8 @@ public class ImagesBusinessController {
     ) {
         String businessId = (String) jwtUtil.extractUserId(request.getHeader("Authorization").substring(7));
 
-        List<images_business> res = imagesBusinessUploadService.getImagesBusinessByBusinessId(businessId);
-        ApiResponse<List<images_business>> response = ApiResponse.<List<images_business>>builder()
+        List<ImagesBusiness> res = imagesBusinessUploadService.getImagesBusinessByBusinessId(businessId);
+        ApiResponse<List<ImagesBusiness>> response = ApiResponse.<List<ImagesBusiness>>builder()
                 .code(1000)
                 .message("Get all images successfully")
                 .data(res)

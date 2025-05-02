@@ -2,8 +2,8 @@ package com.a2m.profileservice.service.Impl;
 
 import com.a2m.profileservice.exception.AppException;
 import com.a2m.profileservice.exception.ErrorCode;
-import com.a2m.profileservice.mapper.business_profilesMapper;
-import com.a2m.profileservice.model.business_profiles;
+import com.a2m.profileservice.mapper.BusinessProfilesMapper;
+import com.a2m.profileservice.model.BusinessProfiles;
 import com.a2m.profileservice.service.BusinessProfileService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,12 +16,12 @@ import java.util.Optional;
 @AllArgsConstructor
 public class BusinessProfileServiceImpl implements BusinessProfileService {
 
-    private business_profilesMapper businessProfilesMapper;
+    private BusinessProfilesMapper businessProfilesMapper;
 
     @Override
-    public business_profiles businessVerifycation(business_profiles businessProfiles, String profileId) {
+    public BusinessProfiles businessVerifycation(BusinessProfiles businessProfiles, String profileId) {
         Optional<String> existingTaxCode = businessProfilesMapper.findByTaxCode(businessProfiles.getTaxCode());
-        business_profiles existingBusiness = businessProfilesMapper.getBusinessProfileById(profileId);
+        BusinessProfiles existingBusiness = businessProfilesMapper.getBusinessProfileById(profileId);
         if(existingTaxCode.isPresent() || existingBusiness != null) {
             throw new AppException(ErrorCode.BUSINESS_EXISTED);
         }
@@ -50,8 +50,8 @@ public class BusinessProfileServiceImpl implements BusinessProfileService {
     }
 
     @Override
-    public business_profiles getBusinessProfileById(String profileId){
-        business_profiles existingBusinessProfile = businessProfilesMapper.getBusinessProfileById(profileId);
+    public BusinessProfiles getBusinessProfileById(String profileId){
+        BusinessProfiles existingBusinessProfile = businessProfilesMapper.getBusinessProfileById(profileId);
         if(existingBusinessProfile == null){
             throw new AppException(ErrorCode.BUSINESS_NOT_FOUND);
         }
@@ -59,8 +59,8 @@ public class BusinessProfileServiceImpl implements BusinessProfileService {
     }
 
     @Override
-    public business_profiles updateBusinessProfile(business_profiles businessProfiles, String businessId) {
-        business_profiles existingBusinessProfile = businessProfilesMapper.getBusinessProfileById(businessId);
+    public BusinessProfiles updateBusinessProfile(BusinessProfiles businessProfiles, String businessId) {
+        BusinessProfiles existingBusinessProfile = businessProfilesMapper.getBusinessProfileById(businessId);
         if(existingBusinessProfile == null){
             throw new AppException(ErrorCode.BUSINESS_NOT_FOUND);
         }
