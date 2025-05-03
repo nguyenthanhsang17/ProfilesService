@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 @Mapper
-public interface student_profilesMapper {
+public interface StudentProfilesMapper {
     public List<student_profiles> getAll();
     public student_profiles getById(String id);
     public int checkExits(String id);

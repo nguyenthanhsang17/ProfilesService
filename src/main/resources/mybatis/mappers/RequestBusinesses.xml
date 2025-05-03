@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.a2m.profileservice.mapper.RequestBusinessesMapper">
+
+    <!-- Map kết quả từ cơ sở dữ liệu thành Request Business -->
+    <resultMap id="RequestBusinessResultMap" type="com.a2m.profileservice.model.RequestBusinesses">
+        <id property="requestId" column="request_id" />
+        <result property="businessId" column="business_id" />
+        <result property="reason" column="reason" />
+        <result property="sendTime" column="send_time" jdbcType="TIMESTAMP" />
+        <result property="status" column="status" />
+        <result property="isDeleted" column="is_deleted" jdbcType="BOOLEAN" />
+    </resultMap>
+
+    <!-- Thêm yêu cầu xác thực doanh nghiệp -->
+    <insert id="insertRequestBusiness" parameterType="com.a2m.profileservice.model.RequestBusinesses">
+        INSERT INTO profile_service.request_businesses (request_id, business_id, reason, send_time, status, is_deleted)
+        VALUES (#{requestId}, #{businessId}, null, NOW(), "pending", false)
+    </insert>
+
+    <!-- Lấy danh sách toàn bộ yêu cầu xác thực doanh nghiệp chưa bị xoá -->
+    <select id="getAllRequestBusiness" resultMap="RequestBusinessResultMap">
+        SELECT
+            request_id,
+            business_id,
+            reason,
+            send_time,
+            status,
+            is_deleted
+        FROM profile_service.request_businesses
+        WHERE is_deleted = false
+        ORDER BY send_time DESC
+    </select>
+
+
+    <!-- Lấy yêu cầu xác thực doanh nghiệp theo ID -->
+    <select id="getRequestBusinessById" parameterType="String" resultMap="RequestBusinessResultMap">
+        SELECT * FROM profile_service.request_businesses
+        WHERE request_id = #{requestId} AND is_deleted = false
+    </select>
+</mapper>

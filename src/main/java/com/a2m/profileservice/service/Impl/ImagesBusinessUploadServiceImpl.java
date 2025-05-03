@@ -2,8 +2,8 @@ package com.a2m.profileservice.service.Impl;
 
 import com.a2m.profileservice.exception.AppException;
 import com.a2m.profileservice.exception.ErrorCode;
-import com.a2m.profileservice.mapper.images_businessMapper;
-import com.a2m.profileservice.model.images_business;
+import com.a2m.profileservice.mapper.ImagesBusinessMapper;
+import com.a2m.profileservice.model.ImagesBusiness;
 import com.a2m.profileservice.service.ImagesBusinessUploadService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,7 +28,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ImagesBusinessUploadServiceImpl implements ImagesBusinessUploadService {
 
-    private final images_businessMapper imagesBusinessMapper;
+    private final ImagesBusinessMapper imagesBusinessMapper;
 
     private static final String IMAGEKIT_UPLOAD_URL = "https://upload.imagekit.io/api/v1/files/upload";
     private static final String PRIVATE_API_KEY = "private_e2V3fNLKwK0pGwSrEmFH+iKQtks=";
@@ -44,7 +44,7 @@ public class ImagesBusinessUploadServiceImpl implements ImagesBusinessUploadServ
     }
 
     @Override
-    public List<images_business> addImagesBusiness(List<MultipartFile> files, String businessId) {
+    public List<ImagesBusiness> addImagesBusiness(List<MultipartFile> files, String businessId) {
         List<String> imageUrls = new ArrayList<>();
 
         for (MultipartFile file : files) {
@@ -93,7 +93,7 @@ public class ImagesBusinessUploadServiceImpl implements ImagesBusinessUploadServ
         }
 
         for(String url : imageUrls) {
-            images_business imagesBusiness = new images_business();
+            ImagesBusiness imagesBusiness = new ImagesBusiness();
             imagesBusiness.setImageId(UUID.randomUUID().toString());
             imagesBusiness.setImageUrl(url);
             imagesBusiness.setBusinessId(businessId);
@@ -108,8 +108,22 @@ public class ImagesBusinessUploadServiceImpl implements ImagesBusinessUploadServ
     }
 
     @Override
-    public List<images_business> getImagesBusinessByBusinessId(String businessId) {
-        List<images_business> imagesBusinessList = imagesBusinessMapper.getImagesBusinessByBusinessId(businessId);
+    public int deleteImagesBusiness(String imageId) {
+        ImagesBusiness existingImage = imagesBusinessMapper.getImagesBusinessByImageId(imageId);
+        if(existingImage == null) {
+            throw new AppException(ErrorCode.BUSINESS_IMAGE_NOT_FOUND);
+        }
+
+        int result = imagesBusinessMapper.deleteImagesBusinessById(imageId);
+        if(result == 0) {
+            throw new AppException(ErrorCode.BUSINESS_IMAGE_NOT_FOUND);
+        }
+        return result;
+    }
+
+    @Override
+    public List<ImagesBusiness> getImagesBusinessByBusinessId(String businessId) {
+        List<ImagesBusiness> imagesBusinessList = imagesBusinessMapper.getImagesBusinessByBusinessId(businessId);
         if(imagesBusinessList.isEmpty()) {
             throw new AppException(ErrorCode.BUSINESS_IMAGE_NOT_FOUND);
         }
@@ -120,7 +134,7 @@ public class ImagesBusinessUploadServiceImpl implements ImagesBusinessUploadServ
 
     @Override
     public String getFirstImageBusinessByBusinessId(String businessId) {
-        images_business firstImage = imagesBusinessMapper.getFirstImageBusinessByBusinessId(businessId);
+        ImagesBusiness firstImage = imagesBusinessMapper.getFirstImageBusinessByBusinessId(businessId);
         if(firstImage == null) {
             throw new AppException(ErrorCode.BUSINESS_IMAGE_NOT_FOUND);
         }

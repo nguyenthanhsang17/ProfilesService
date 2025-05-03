@@ -27,11 +27,15 @@ mybatis:
 
 server:
   port: 8888
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: always
 
 springdoc:
   api-docs:
     enabled: true  # Bật API docs
     path: /v3/api-docs  # Đặt đường dẫn API docs
   swagger-ui:
-    enabled: true  # Bật Swagger UI
-    path: /swagger-ui.html  # Đặt đường dẫn Swagger UI
+    path: /swagger-ui.html
+

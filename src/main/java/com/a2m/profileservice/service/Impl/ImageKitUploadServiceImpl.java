@@ -1,12 +1,10 @@
 package com.a2m.profileservice.service.Impl;
 
-import com.a2m.profileservice.dto.ApiResponse;
 import com.a2m.profileservice.mapper.RequestStudentMapper;
 import com.a2m.profileservice.mapper.StudentCardMapper;
-import com.a2m.profileservice.mapper.student_profilesMapper;
+import com.a2m.profileservice.mapper.StudentProfilesMapper;
 import com.a2m.profileservice.model.StudentCard;
 import com.a2m.profileservice.service.ImageKitUploadService;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -29,12 +27,12 @@ public class ImageKitUploadServiceImpl implements ImageKitUploadService {
     private static final String PRIVATE_API_KEY = "private_e2V3fNLKwK0pGwSrEmFH+iKQtks=";
     private static final String PUBLIC_API_KEY = "public_Q+yi7A0O9A+joyXIoqM4TpVqOrQ=";
 
-    private final student_profilesMapper mapper;
+    private final StudentProfilesMapper mapper;
     private final StudentCardMapper studentCardMapper;
     private final RequestStudentMapper requestStudentMapper;
 
     @Autowired
-    public ImageKitUploadServiceImpl(student_profilesMapper mapper, StudentCardMapper studentCardMapper, RequestStudentMapper requestStudentMapper) {
+    public ImageKitUploadServiceImpl(StudentProfilesMapper mapper, StudentCardMapper studentCardMapper, RequestStudentMapper requestStudentMapper) {
         this.mapper = mapper;
         this.studentCardMapper = studentCardMapper;
         this.requestStudentMapper = requestStudentMapper;

@@ -9,7 +9,7 @@ import com.a2m.profileservice.exception.AppException;
 import com.a2m.profileservice.exception.ErrorCode;
 import com.a2m.profileservice.mapper.RequestStudentMapper;
 import com.a2m.profileservice.mapper.StudentCardMapper;
-import com.a2m.profileservice.mapper.student_profilesMapper;
+import com.a2m.profileservice.mapper.StudentProfilesMapper;
 import com.a2m.profileservice.model.StudentCard;
 import com.a2m.profileservice.model.student_profiles;
 import com.a2m.profileservice.service.StudentProfileService;
@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,12 +24,12 @@ import java.util.stream.Collectors;
 public class StudentProfileServiceImpl implements StudentProfileService {
 
 
-    private final student_profilesMapper mapper;
+    private final StudentProfilesMapper mapper;
     private final StudentCardMapper studentCardMapper;
     private final RequestStudentMapper requestStudentMapper;
 
     @Autowired
-    public StudentProfileServiceImpl(student_profilesMapper mapper, StudentCardMapper studentCardMapper, RequestStudentMapper requestStudentMapper) {
+    public StudentProfileServiceImpl(StudentProfilesMapper mapper, StudentCardMapper studentCardMapper, RequestStudentMapper requestStudentMapper) {
         this.mapper = mapper;
         this.studentCardMapper = studentCardMapper;
         this.requestStudentMapper = requestStudentMapper;

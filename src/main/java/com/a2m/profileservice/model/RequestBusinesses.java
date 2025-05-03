@@ -9,10 +9,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class images_business {
-    private String imageId;
+public class RequestBusinesses {
+    private String requestId;
     private String businessId;
-    private String imageUrl;
+    private String reason;
+    private LocalDateTime sendTime;
+    private String status; // "pending", "approve", "reject"
     private boolean isDeleted;
-    private LocalDateTime createdAt;
 }
