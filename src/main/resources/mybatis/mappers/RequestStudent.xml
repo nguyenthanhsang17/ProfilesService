@@ -57,6 +57,13 @@
     </select>
 
 
+    <select id="checkApproved" resultType="boolean" parameterType="string">
+        SELECT COUNT(1) > 0
+        FROM request_students
+        WHERE student_id = #{id} AND status = 'approve'
+    </select>
+
+
 
 
 

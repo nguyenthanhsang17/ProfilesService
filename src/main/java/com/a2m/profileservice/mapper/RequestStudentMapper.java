@@ -10,4 +10,5 @@ public interface RequestStudentMapper {
     public boolean checkRequestStudentAlreadyRegistered(String student_id);
     public int SendRequest(String student_id);
     public RequestStudents GetRequestStudent(String student_id);
+    boolean checkApproved(String id);
 }

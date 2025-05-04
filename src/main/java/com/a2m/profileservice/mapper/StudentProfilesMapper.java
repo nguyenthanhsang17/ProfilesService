@@ -14,5 +14,6 @@ public interface StudentProfilesMapper {
     int createStudentProfile(student_profiles studentProfiles);
     public int updateStudentProfile(student_profiles studentProfiles);
     int UpdateAvatar(@Param("avatar") String avatar, @Param("id") String id);
+    boolean checkIfExists(String id);
 
 }

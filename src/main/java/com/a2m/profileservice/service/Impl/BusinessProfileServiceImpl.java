@@ -1,5 +1,6 @@
 package com.a2m.profileservice.service.Impl;
 
+import com.a2m.profileservice.dto.ApiResponse;
 import com.a2m.profileservice.exception.AppException;
 import com.a2m.profileservice.exception.ErrorCode;
 import com.a2m.profileservice.mapper.BusinessProfilesMapper;
@@ -85,5 +86,18 @@ public class BusinessProfileServiceImpl implements BusinessProfileService {
         businessProfilesMapper.updateBusinessProfile(existingBusinessProfile);
 
         return existingBusinessProfile;
+    }
+
+    @Override
+    public ApiResponse<Boolean> checkProfileExist(String profileId) {
+        var existingBusinessProfile = businessProfilesMapper.checkProfileExist(profileId);
+        if(existingBusinessProfile==false){
+            throw new AppException(ErrorCode.BUSINESS_Not_PROFILE);
+        }
+        var api = new ApiResponse<Boolean>();
+        api.setCode(200);
+        api.setData(existingBusinessProfile);
+        api.setMessage("profile exist");
+        return api;
     }
 }

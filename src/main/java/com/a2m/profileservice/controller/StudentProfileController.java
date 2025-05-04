@@ -1,6 +1,7 @@
 package com.a2m.profileservice.controller;
 
 import com.a2m.profileservice.dto.ApiResponse;
+import com.a2m.profileservice.dto.student_profilesDTOs.avatarUpdateDTO;
 import com.a2m.profileservice.dto.student_profilesDTOs.student_profilesDTO;
 import com.a2m.profileservice.dto.student_profilesDTOs.student_profilesDTOForCreate;
 import com.a2m.profileservice.dto.student_profilesDTOs.student_profilesDTOForUpdate;
@@ -93,10 +94,10 @@ public class StudentProfileController {
         return ResponseEntity.ok(api);
     }
 
-    @PutMapping(value = "/updateurlavatar/{url}")
-    public ResponseEntity<?> update(HttpServletRequest request, @PathVariable String url) {
+    @PutMapping(value = "/updateurlavatar")
+    public ResponseEntity<?> update(HttpServletRequest request, @RequestBody avatarUpdateDTO url) {
         String userId = (String) request.getAttribute("userId");
-        var api = studentProfileService.updateAvatar(url, userId);
+        var api = studentProfileService.updateAvatar(url.getAvatarUrl(), userId);
         return ResponseEntity.ok(api);
     }
 
@@ -104,6 +105,20 @@ public class StudentProfileController {
     public ResponseEntity<?> UpdateProfile(@RequestBody student_profilesDTOForUpdate studentProfilesDTO, HttpServletRequest request) {
         String userId = (String) request.getAttribute("userId");
         var api = studentProfileService.UpdateProfileStudent(studentProfilesDTO, userId);
+        return ResponseEntity.ok(api);
+    }
+
+    @GetMapping("/checkprofileexits")
+    public ResponseEntity<ApiResponse<?>> checkProfileExits(HttpServletRequest request) {
+        String userId = (String) request.getAttribute("userId");
+        var api = studentProfileService.checkIfExists(userId);
+        return ResponseEntity.ok(api);
+    }
+
+    @GetMapping("/checkprofileApprove")
+    public ResponseEntity<ApiResponse<?>> checkProfileApprove(HttpServletRequest request) {
+        String userId = (String) request.getAttribute("userId");
+        var api = studentProfileService.checkIfExists(userId);
         return ResponseEntity.ok(api);
     }
 

@@ -9,6 +9,7 @@
         <typeAlias type="com.a2m.profileservice.model.StudentCard" alias="StudentCard" />
         <typeAlias type="com.a2m.profileservice.model.RequestStudents" alias="RequestStudents" />
         <typeAlias type="com.a2m.profileservice.model.RequestBusinesses" alias="RequestBusiness" />
+        <typeAlias type="com.a2m.profileservice.model.StudentFavoriteJob" alias="FarvouriteJob"/>
     </typeAliases>
 
 </configuration>

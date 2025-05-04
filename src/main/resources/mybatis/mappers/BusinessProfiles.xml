@@ -68,5 +68,12 @@
         AND is_deleted = false
     </update>
 
+    <select id="checkProfileExist" resultType="boolean" parameterType="string">
+        SELECT COUNT(1) > 0
+        FROM business_profiles
+        WHERE profile_id = #{profileId}
+    </select>
+
+
 
 </mapper>

@@ -16,10 +16,11 @@ public class BusinessProfileController {
 
     private final BusinessProfileService businessProfileService;
     private final JwtUtil jwtUtil;
+
     @PostMapping("/verify")
     public ResponseEntity<ApiResponse<BusinessProfiles>> businessVerifycation(
             @RequestBody BusinessProfiles businessProfiles, HttpServletRequest request
-    ){
+    ) {
 //        String authHeader = request.getHeader("Authorization");
 //        System.out.println("Auth header = " + authHeader);
         String token = request.getHeader("Authorization").substring(7);
@@ -41,7 +42,7 @@ public class BusinessProfileController {
 
         String profileId = jwtUtil.extractUserId(token);
 
-        if(profileId == null) {
+        if (profileId == null) {
             return ResponseEntity.status(403).body(ApiResponse.<BusinessProfiles>builder()
                     .code(403)
                     .message("Profile ID not found in token")
@@ -103,7 +104,7 @@ public class BusinessProfileController {
     public ResponseEntity<ApiResponse<BusinessProfiles>> updateBusinessProfile(
             @RequestBody BusinessProfiles businessProfiles,
             HttpServletRequest request
-    ){
+    ) {
         try {
             String authHeader = request.getHeader("Authorization");
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -131,6 +132,17 @@ public class BusinessProfileController {
                     .build());
         }
     }
+
+    @GetMapping("/checkprofilexits")
+    public ResponseEntity<ApiResponse<?>> checkProfileXits(HttpServletRequest request) {
+        String userId = (String) request.getAttribute("userId");
+        var api = businessProfileService.checkProfileExist(userId);
+        return ResponseEntity.ok(api);
+    }
+
+
+
+
 
 
 

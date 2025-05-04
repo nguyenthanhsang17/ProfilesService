@@ -57,4 +57,10 @@ public class RequestStudentServiceImpl implements RequestStudentService {
         response.setMessage("Success");
         return response;
     }
+
+    @Override
+    public ApiResponse<Boolean> checkApproved(String student_id) {
+        boolean check = requestStudentMapper.checkApproved(student_id);
+        return null;
+    }
 }
