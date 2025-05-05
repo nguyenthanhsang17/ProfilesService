@@ -46,11 +46,20 @@
         WHERE tax_code = #{taxCode} AND is_deleted = false
     </select>
 
+    <select id="getCompanyNameById" parameterType="String" resultType="string">
+        SELECT company_name
+        FROM profile_service.business_profiles
+        WHERE profile_id = #{profileId}
+          AND is_deleted = false
+    </select>
+
+
     <!-- Lấy thông tin business profile theo id -->
     <select id="getBusinessProfileById" parameterType="String" resultMap="businessProfileResultMap">
         SELECT * FROM profile_service.business_profiles
         WHERE profile_id = #{profileId} AND is_deleted = false
     </select>
+
 
     <!-- Cập nhật thông tin business profile -->
     <update id="updateBusinessProfile" parameterType="com.a2m.profileservice.model.BusinessProfiles">

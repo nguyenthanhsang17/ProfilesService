@@ -42,8 +42,8 @@ public enum ErrorCode {
     CV_NOT_OWNER(6003, "CV not OWNER", HttpStatus.BAD_REQUEST),
 
     // 9xxx – System
-    INTERNAL_ERROR(9999, "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR);
-
+    INTERNAL_ERROR(9999, "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR),
+    MISSING_REASON(9998, "You forgot the reason when you reject the request", HttpStatus.INTERNAL_SERVER_ERROR);
     private final int code;
     private final String message;
     private final HttpStatus status;

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/api/v1/request-business")
 public class RequestBusinessesController {
 
-    private final RequestBusinessesService requestBusinessService;
+    private final RequestBusinessesService requestBusinessesService;
     private final JwtUtil jwtUtil;
 
     @PostMapping("/insert-request-business")
@@ -49,7 +49,7 @@ public class RequestBusinessesController {
                     .build());
         }
 
-        RequestBusinesses newRequestBusiness = requestBusinessService.insertRequestBusiness(businessId);
+        RequestBusinesses newRequestBusiness = requestBusinessesService.insertRequestBusiness(businessId);
         ApiResponse<RequestBusinesses> response = ApiResponse.<RequestBusinesses>builder()
                 .code(1000)
                 .message("Request Business created successfully")

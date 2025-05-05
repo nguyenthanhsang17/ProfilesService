@@ -56,10 +56,50 @@
             LIMIT 1
     </select>
 
+    <select id="getAllRequestStudents" resultMap="requestStudentsResultMap">
+        SELECT * FROM request_students
+        WHERE is_deleted = 0
+        ORDER BY send_time DESC
+    </select>
 
+    <!-- Lấy request sinh viên theo status -->
+    <select id="getRequestStudentByStatus" parameterType="string" resultMap="requestStudentsResultMap">
+        SELECT * FROM request_students
+        WHERE is_deleted = 0 AND status = #{status}
+        ORDER BY send_time DESC
+    </select>
 
+    <select id="getRequestStudentById" parameterType="string" resultMap="requestStudentsResultMap">
+        SELECT * FROM request_students
+        WHERE request_id = #{requestId}
+          AND is_deleted = 0
+    </select>
 
+    <update id="updateRequestStudentStatus">
+        UPDATE request_students
+        SET status = #{status}
+        WHERE request_id = #{requestId}
+          AND is_deleted = 0
+    </update>
 
-
+    <update id="updateRejectReason">
+        UPDATE request_students
+        SET reason = #{reason}
+        WHERE request_id = #{requestId}
+    </update>
+    <!-- get all request dung cursor pagination-->
+    <select id="getRequestStudentsByCursor" parameterType="map" resultMap="requestStudentsResultMap">
+        SELECT *
+        FROM request_students
+        WHERE is_deleted = 0
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+        <if test="cursor != null">
+            AND send_time &lt; #{cursor}
+        </if>
+        ORDER BY send_time DESC
+        LIMIT #{limit}
+    </select>
 
 </mapper>

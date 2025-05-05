@@ -79,10 +79,11 @@
         WHERE profile_id = #{id}
     </update>
 
-
-
-
-
-
+    <select id="getStudentName" parameterType="String" resultType="string">
+        SELECT full_name
+        FROM profile_service.student_profiles
+        WHERE profile_id = #{profileId}
+          AND is_deleted = false
+    </select>
 
 </mapper>
