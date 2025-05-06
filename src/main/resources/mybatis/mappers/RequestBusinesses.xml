@@ -39,4 +39,14 @@
         SELECT * FROM profile_service.request_businesses
         WHERE request_id = #{requestId} AND is_deleted = false
     </select>
+
+
+    <select id="getRequestBusinessByBusinessId" resultMap="RequestBusinessResultMap" resultType="RequestBusinesses">
+        SELECT *
+        FROM request_businesses
+        WHERE business_id = #{businessId}
+          AND is_deleted = 0
+        ORDER BY send_time DESC LIMIT 1
+    </select>
+
 </mapper>

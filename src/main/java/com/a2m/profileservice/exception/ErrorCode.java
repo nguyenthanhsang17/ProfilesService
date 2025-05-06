@@ -37,6 +37,11 @@ public enum ErrorCode {
     INTERNSHIP_CREATION_FAILED(5007, "Failed to create internship", HttpStatus.INTERNAL_SERVER_ERROR),
     APPLICATION_DUPLICATE(5008, "Application already exists", HttpStatus.CONFLICT),
     ROLE_ASSIGNMENT_FAILED(5009, "Failed to assign role", HttpStatus.INTERNAL_SERVER_ERROR),
+
+    //REQUEST_BUSINESS
+    REQUEST_BUSINESS_NOT_FOUND(5010, "Request business not found", HttpStatus.BAD_REQUEST),
+
+
     //sang
     REQUEST_STUDENT_ALREADY_REGISTERED(6001, "Register Student already registered", HttpStatus.BAD_REQUEST),
     REQUEST_STUDENT_NOT_REGISTERED(6002, "Student not registered", HttpStatus.BAD_REQUEST),

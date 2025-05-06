@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -24,16 +25,16 @@ public class RequestBusinessesController {
             HttpServletRequest request
     ){
         String token = request.getHeader("Authorization").substring(7);
-        String role = jwtUtil.extractRoleFromToken(token);
+        String role = jwtUtil.extractRoleFromToken2(token);
 
-        if (role == null) {
+        if (role == null||role.equals("")) {
             return ResponseEntity.status(403).body(ApiResponse.<RequestBusinesses>builder()
                     .code(403)
                     .message("Role not found in token")
                     .build());
         }
 
-        if (!"BUSINESS".equals(role)) {
+        if (!role.contains("BUSINESS")) {
             return ResponseEntity.status(403).body(ApiResponse.<RequestBusinesses>builder()
                     .code(403)
                     .message("You are not authorized to perform this action")
@@ -57,4 +58,18 @@ public class RequestBusinessesController {
                 .build();
         return ResponseEntity.ok(response);
     }
+
+
+    @GetMapping("/getrequest")
+    public ResponseEntity<ApiResponse<RequestBusinesses>> getRequestBusiness(HttpServletRequest request){
+        String userId = (String) request.getAttribute("userId");
+        var obj = requestBusinessService.getRequestBusinessByBusinessId(userId);
+        ApiResponse<RequestBusinesses> response = new ApiResponse<>();
+        response.setData(obj);
+        response.setCode(200);
+        response.setMessage("Request Business found");
+        return ResponseEntity.ok(response);
+    }
+
+
 }

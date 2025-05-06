@@ -24,16 +24,16 @@ public class BusinessProfileController {
 //        String authHeader = request.getHeader("Authorization");
 //        System.out.println("Auth header = " + authHeader);
         String token = request.getHeader("Authorization").substring(7);
-        String role = jwtUtil.extractRoleFromToken(token);
+        String role = jwtUtil.extractRoleFromToken2(token);
 
-        if (role == null) {
+        if (role == null||role.equals("")) {
             return ResponseEntity.status(403).body(ApiResponse.<BusinessProfiles>builder()
                     .code(403)
                     .message("Role not found in token")
                     .build());
         }
 
-        if (!"BUSINESS".equals(role)) {
+        if (!role.contains("BUSINESS")) {
             return ResponseEntity.status(403).body(ApiResponse.<BusinessProfiles>builder()
                     .code(403)
                     .message("You are not authorized to perform this action")
@@ -71,16 +71,16 @@ public class BusinessProfileController {
         }
 
         String token = authHeader.substring(7);
-        String role = jwtUtil.extractRoleFromToken(token);
+        String role = jwtUtil.extractRoleFromToken2(token);
 
-        if (role == null) {
+        if (role == null||role.equals("")) {
             return ResponseEntity.status(403).body(ApiResponse.<BusinessProfiles>builder()
                     .code(403)
                     .message("Role not found in token")
                     .build());
         }
 
-        if (!"BUSINESS".equals(role)) {
+        if (!role.contains("BUSINESS")) {
             return ResponseEntity.status(403).body(ApiResponse.<BusinessProfiles>builder()
                     .code(403)
                     .message("You are not authorized to perform this action")
