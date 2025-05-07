@@ -13,4 +13,5 @@ public interface RequestBusinessesMapper {
                               @Param("businessId") String businessId);
     List<RequestBusinesses> getAllRequestBusiness();
     RequestBusinesses getRequestBusinessById(@Param("requestId") String requestId);
+    RequestBusinesses getRequestBusinessByBusinessId(@Param("businessId") String businessId);
 }

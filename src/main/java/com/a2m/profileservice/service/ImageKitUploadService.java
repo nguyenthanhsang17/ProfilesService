@@ -8,4 +8,5 @@ public interface ImageKitUploadService {
     public String uploadImage(MultipartFile file, String profileId);
     public String uploadImages(List<MultipartFile> files, String profileId);
     public String uploadCV(MultipartFile file, String profileId);
+    public String uploadImagesBusiness(List<MultipartFile> files, String profileId);
 }

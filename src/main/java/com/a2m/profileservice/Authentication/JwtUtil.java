@@ -10,6 +10,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.KeyFactory;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class JwtUtil {
@@ -58,6 +59,27 @@ public class JwtUtil {
             return null;
         }
     }
+
+    public String extractRoleFromToken2(String token) {
+        try {
+            Claims claims = extractAllClaims(token);
+            System.out.println("Kích thước claims: " + claims.size());
+            List<String> roles = claims.get("roles", List.class);
+
+            if (roles != null && !roles.isEmpty()) {
+                return String.join(", ", roles);
+            } else {
+                return "";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    
+
 
     // Lấy userId từ token
     public String extractUserId(String token) {
