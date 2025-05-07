@@ -123,7 +123,7 @@ public class StaffAdminController {
 //  Không truyền status → lấy tất cả request students bất kể trạng thái
 
 
-    @GetMapping("/request/business/paging")
+    @GetMapping("/request/students/paging")
     public ResponseEntity<ApiResponse<PageResponse<RequestBusinessResponse>>> getBusinessesRequestsByCursor(
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String cursor,
