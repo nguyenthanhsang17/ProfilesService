@@ -59,11 +59,7 @@
     </select>
 
 
-    <select id="getAllRequestStudents" resultMap="requestStudentsResultMap">
-        SELECT * FROM request_students
-        WHERE is_deleted = 0
-        ORDER BY send_time DESC
-    </select>
+
 
 
     <!-- Lấy request sinh viên theo status -->
@@ -87,12 +83,7 @@
         ORDER BY send_time DESC
     </select>
 
-    <!-- Lấy request theo status -->
-    <select id="getRequestStudentByStatus" parameterType="string" resultMap="requestStudentsResultMap">
-        SELECT * FROM request_students
-        WHERE is_deleted = 0 AND status = #{status}
-        ORDER BY send_time DESC
-    </select>
+
 
     <!-- Lấy request theo request_id -->
     <select id="getRequestStudentById" parameterType="string" resultMap="requestStudentsResultMap">
@@ -101,11 +92,7 @@
           AND is_deleted = 0
     </select>
 
-    <select id="getRequestStudentById" parameterType="string" resultMap="requestStudentsResultMap">
-        SELECT * FROM request_students
-        WHERE request_id = #{requestId}
-          AND is_deleted = 0
-    </select>
+
 
     <update id="updateRequestStudentStatus">
         UPDATE request_students

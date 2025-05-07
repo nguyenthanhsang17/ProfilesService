@@ -39,7 +39,6 @@
         WHERE request_id = #{requestId} AND is_deleted = false
     </select>
 
-</mapper>
 
 
     <!-- Lấy theo businessId mới nhất -->

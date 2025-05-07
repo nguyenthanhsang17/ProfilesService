@@ -94,21 +94,7 @@ public class StaffAdminController {
     }
 
     //cursor pagination
-    @GetMapping("/request/students/paging")
-    public ResponseEntity<ApiResponse<PageResponse<RequestStudentReponse>>> getStudentRequestsByCursor(
-            @RequestParam(required = false) String status,
-            @RequestParam(required = false) String cursor,
-            @RequestParam(defaultValue = "10") int limit) {
 
-        PageResponse<RequestStudentReponse> result = staffAdminService.getRequestStudentByCursor(status, cursor, limit);
-
-        return ResponseEntity.ok(
-                ApiResponse.<PageResponse<RequestStudentReponse>>builder()
-                        .message("Get student requests with cursor pagination successfully")
-                        .data(result)
-                        .build()
-        );
-    }
 
 //1. Lấy trang đầu tiên (danh sách mới nhất)
 //    GET /api/v1/staff-admin/request/students/paging?status=approve&limit=10

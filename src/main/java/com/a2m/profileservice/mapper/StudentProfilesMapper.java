@@ -19,6 +19,5 @@ public interface StudentProfilesMapper {
 
     boolean checkIfExists(String id);
 
-    String getStudentName(@Param("profileId") String profileId);
 }
 

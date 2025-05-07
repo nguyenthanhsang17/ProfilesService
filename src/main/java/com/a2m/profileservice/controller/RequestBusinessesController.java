@@ -64,7 +64,7 @@ public class RequestBusinessesController {
     @GetMapping("/getrequest")
     public ResponseEntity<ApiResponse<RequestBusinesses>> getRequestBusiness(HttpServletRequest request){
         String userId = (String) request.getAttribute("userId");
-        var obj = requestBusinessService.getRequestBusinessByBusinessId(userId);
+        var obj = requestBusinessesService.getRequestBusinessByBusinessId(userId);
         ApiResponse<RequestBusinesses> response = new ApiResponse<>();
         response.setData(obj);
         response.setCode(200);
