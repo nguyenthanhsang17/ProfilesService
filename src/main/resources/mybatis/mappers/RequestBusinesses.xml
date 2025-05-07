@@ -19,34 +19,62 @@
         VALUES (#{requestId}, #{businessId}, null, NOW(), "pending", false)
     </insert>
 
-    <!-- Lấy danh sách toàn bộ yêu cầu xác thực doanh nghiệp chưa bị xoá -->
+    <!-- Lấy toàn bộ yêu cầu chưa bị xoá -->
     <select id="getAllRequestBusiness" resultMap="RequestBusinessResultMap">
-        SELECT
-            request_id,
-            business_id,
-            reason,
-            send_time,
-            status,
-            is_deleted
-        FROM profile_service.request_businesses
-        WHERE is_deleted = false
+        SELECT * FROM request_businesses
+        WHERE is_deleted = 0
         ORDER BY send_time DESC
     </select>
 
+    <!-- Lấy yêu cầu theo status -->
+    <select id="getAllRequestBusinessByStatus" parameterType="string" resultMap="RequestBusinessResultMap">
+        SELECT * FROM request_businesses
+        WHERE is_deleted = 0 and status = #{status}
+        ORDER BY send_time DESC
+    </select>
 
-    <!-- Lấy yêu cầu xác thực doanh nghiệp theo ID -->
+    <!-- Lấy theo ID -->
     <select id="getRequestBusinessById" parameterType="String" resultMap="RequestBusinessResultMap">
         SELECT * FROM profile_service.request_businesses
         WHERE request_id = #{requestId} AND is_deleted = false
     </select>
 
-
+    <!-- Lấy theo businessId mới nhất -->
     <select id="getRequestBusinessByBusinessId" resultMap="RequestBusinessResultMap" resultType="RequestBusinesses">
         SELECT *
         FROM request_businesses
         WHERE business_id = #{businessId}
           AND is_deleted = 0
         ORDER BY send_time DESC LIMIT 1
+    </select>
+
+    <!-- Update trạng thái -->
+    <update id="updateRequestBusinessStatus">
+        UPDATE request_businesses
+        SET status = #{status}
+        WHERE request_id = #{requestId}
+          AND is_deleted = 0
+    </update>
+
+    <!-- Update lý do từ chối -->
+    <update id="updateRejectReason">
+        UPDATE request_businesses
+        SET reason = #{reason}
+        WHERE request_id = #{requestId}
+    </update>
+
+    <!-- Phân trang theo cursor -->
+    <select id="getRequestBusinessByCursor" parameterType="map" resultMap="RequestBusinessResultMap">
+        SELECT * FROM request_businesses
+        WHERE is_deleted = 0
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+        <if test="cursor != null">
+            AND send_time &lt; #{cursor}
+        </if>
+        ORDER BY send_time DESC
+        LIMIT #{limit}
     </select>
 
 </mapper>

@@ -8,13 +8,12 @@ import java.util.List;
 
 @Mapper
 public interface StudentProfilesMapper {
-    public List<student_profiles> getAll();
-    public student_profiles getById(String id);
-    public int checkExits(String id);
+    List<student_profiles> getAll();
+    student_profiles getById(String id);
+    int checkExits(String id);
     int createStudentProfile(student_profiles studentProfiles);
-    public int updateStudentProfile(student_profiles studentProfiles);
+    int updateStudentProfile(student_profiles studentProfiles);
     int UpdateAvatar(@Param("avatar") String avatar, @Param("id") String id);
     boolean checkIfExists(String id);
-
-
+    String getStudentName(@Param("profileId") String profileId);
 }
