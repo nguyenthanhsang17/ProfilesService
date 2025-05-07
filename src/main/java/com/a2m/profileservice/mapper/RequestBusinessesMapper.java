@@ -1,11 +1,10 @@
 package com.a2m.profileservice.mapper;
 
 import com.a2m.profileservice.model.RequestBusinesses;
-import com.a2m.profileservice.model.RequestStudents;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-
 import java.sql.Timestamp;
+
 import java.util.List;
 
 @Mapper
@@ -17,6 +16,7 @@ public interface RequestBusinessesMapper {
 
     RequestBusinesses getRequestBusinessById(@Param("requestId") String requestId);
 
+
     List<RequestBusinesses> getAllRequestBusiness();
     List<RequestBusinesses> getAllRequestBusinessByStatus(String status);
 
@@ -24,8 +24,11 @@ public interface RequestBusinessesMapper {
 
     void updateRejectReason(@Param("requestId") String requestId, @Param("reason") String reason);
     List<RequestBusinesses> getRequestBusinessByCursor(@Param("status") String status,
-                                                     @Param("cursor") Timestamp cursor,
-                                                     @Param("limit") int limit);
+                                                       @Param("cursor") Timestamp cursor,
+                                                       @Param("limit") int limit);
 
+
+
+    RequestBusinesses getRequestBusinessByBusinessId(@Param("businessId") String businessId);
 
 }

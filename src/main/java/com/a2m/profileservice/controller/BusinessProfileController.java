@@ -2,6 +2,7 @@ package com.a2m.profileservice.controller;
 
 import com.a2m.profileservice.Authentication.JwtUtil;
 import com.a2m.profileservice.dto.ApiResponse;
+import com.a2m.profileservice.dto.BusinessProfileDTOs.BusinessProfilesForUpdate;
 import com.a2m.profileservice.model.BusinessProfiles;
 import com.a2m.profileservice.service.BusinessProfileService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,23 +17,24 @@ public class BusinessProfileController {
 
     private final BusinessProfileService businessProfileService;
     private final JwtUtil jwtUtil;
+
     @PostMapping("/verify")
     public ResponseEntity<ApiResponse<BusinessProfiles>> businessVerifycation(
             @RequestBody BusinessProfiles businessProfiles, HttpServletRequest request
-    ){
+    ) {
 //        String authHeader = request.getHeader("Authorization");
 //        System.out.println("Auth header = " + authHeader);
         String token = request.getHeader("Authorization").substring(7);
-        String role = jwtUtil.extractRoleFromToken(token);
+        String role = jwtUtil.extractRoleFromToken2(token);
 
-        if (role == null) {
+        if (role == null||role.equals("")) {
             return ResponseEntity.status(403).body(ApiResponse.<BusinessProfiles>builder()
                     .code(403)
                     .message("Role not found in token")
                     .build());
         }
 
-        if (!"BUSINESS".equals(role)) {
+        if (!role.contains("BUSINESS")) {
             return ResponseEntity.status(403).body(ApiResponse.<BusinessProfiles>builder()
                     .code(403)
                     .message("You are not authorized to perform this action")
@@ -41,7 +43,7 @@ public class BusinessProfileController {
 
         String profileId = jwtUtil.extractUserId(token);
 
-        if(profileId == null) {
+        if (profileId == null) {
             return ResponseEntity.status(403).body(ApiResponse.<BusinessProfiles>builder()
                     .code(403)
                     .message("Profile ID not found in token")
@@ -70,16 +72,16 @@ public class BusinessProfileController {
         }
 
         String token = authHeader.substring(7);
-        String role = jwtUtil.extractRoleFromToken(token);
+        String role = jwtUtil.extractRoleFromToken2(token);
 
-        if (role == null) {
+        if (role == null||role.equals("")) {
             return ResponseEntity.status(403).body(ApiResponse.<BusinessProfiles>builder()
                     .code(403)
                     .message("Role not found in token")
                     .build());
         }
 
-        if (!"BUSINESS".equals(role)) {
+        if (!role.contains("BUSINESS")) {
             return ResponseEntity.status(403).body(ApiResponse.<BusinessProfiles>builder()
                     .code(403)
                     .message("You are not authorized to perform this action")
@@ -101,9 +103,9 @@ public class BusinessProfileController {
 
     @PutMapping("/update")
     public ResponseEntity<ApiResponse<BusinessProfiles>> updateBusinessProfile(
-            @RequestBody BusinessProfiles businessProfiles,
+            @RequestBody BusinessProfilesForUpdate businessProfiles,
             HttpServletRequest request
-    ){
+    ) {
         try {
             String authHeader = request.getHeader("Authorization");
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -114,12 +116,11 @@ public class BusinessProfileController {
             }
 
             String businessId = jwtUtil.extractUserId(authHeader.substring(7));
-            BusinessProfiles updatedBusiness = businessProfileService.updateBusinessProfile(businessProfiles, businessId);
+            var updatedBusiness = businessProfileService.updateBusinessProfileAfterFix(businessProfiles, businessId);
 
             ApiResponse<BusinessProfiles> response = ApiResponse.<BusinessProfiles>builder()
                     .code(1000)
                     .message("Business profile updated successfully")
-                    .data(updatedBusiness)
                     .build();
 
             return ResponseEntity.ok(response);
@@ -131,6 +132,17 @@ public class BusinessProfileController {
                     .build());
         }
     }
+
+    @GetMapping("/checkprofilexits")
+    public ResponseEntity<ApiResponse<?>> checkProfileXits(HttpServletRequest request) {
+        String userId = (String) request.getAttribute("userId");
+        var api = businessProfileService.checkProfileExist(userId);
+        return ResponseEntity.ok(api);
+    }
+
+
+
+
 
 
 

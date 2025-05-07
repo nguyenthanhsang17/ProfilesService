@@ -16,6 +16,7 @@ public interface RequestStudentMapper {
     public RequestStudents GetRequestStudent(String student_id);
 
 
+
     List<RequestStudents> getAllRequestStudents();
     List<RequestStudents> getRequestStudentByStatus(String status);
     RequestStudents getRequestStudentById(@Param("requestId") String id);
@@ -27,5 +28,8 @@ public interface RequestStudentMapper {
                                                      @Param("cursor") Timestamp cursor,
                                                      @Param("limit") int limit);
 
+
+
+    boolean checkApproved(String id);
 
 }

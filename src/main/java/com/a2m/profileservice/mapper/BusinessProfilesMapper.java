@@ -17,6 +17,13 @@ public interface BusinessProfilesMapper {
     BusinessProfiles getBusinessProfileById(@Param("profileId") String profileId);
 
     int updateBusinessProfile(BusinessProfiles businessProfiles);
+
     String getCompanyNameById(@Param("profileId") String profileId);
+
+
+    boolean checkProfileExist(@Param("profileId") String profileId);
+
+
+    int updateBusinessProfileAfterFix(BusinessProfiles businessProfiles);
 
 }

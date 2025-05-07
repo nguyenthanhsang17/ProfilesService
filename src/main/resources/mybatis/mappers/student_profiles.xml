@@ -79,11 +79,20 @@
         WHERE profile_id = #{id}
     </update>
 
+
     <select id="getStudentName" parameterType="String" resultType="string">
         SELECT full_name
         FROM profile_service.student_profiles
         WHERE profile_id = #{profileId}
           AND is_deleted = false
     </select>
+
+
+    <select id="checkIfExists" resultType="boolean" parameterType="string">
+        SELECT COUNT(1) > 0
+        FROM student_profiles
+        WHERE profile_id = #{id}
+    </select>
+
 
 </mapper>

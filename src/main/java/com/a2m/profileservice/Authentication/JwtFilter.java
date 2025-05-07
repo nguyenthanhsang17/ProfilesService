@@ -38,9 +38,12 @@ public class JwtFilter extends OncePerRequestFilter {
                 System.out.println("email: "+email);
                 if (email != null && !jwtUtil.isTokenExpired(token)) {
                     String role = jwtUtil.extractRoleFromToken(token); // Giả sử có hàm này
+                    String roles = jwtUtil.extractRoleFromToken2(token);
                     String idstr = jwtUtil.extractUserId(token);
                     System.out.println("filter"+idstr);
                     request.setAttribute("userId", idstr);
+                    request.setAttribute("roles", roles);
+                    request.setAttribute("role", role);
                     request.setAttribute("email", email);
                     System.out.println("User authenticated with email: " + email);
                 }

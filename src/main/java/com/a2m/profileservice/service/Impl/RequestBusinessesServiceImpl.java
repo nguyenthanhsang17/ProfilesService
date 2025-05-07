@@ -1,5 +1,7 @@
 package com.a2m.profileservice.service.Impl;
 
+import com.a2m.profileservice.exception.AppException;
+import com.a2m.profileservice.exception.ErrorCode;
 import com.a2m.profileservice.mapper.RequestBusinessesMapper;
 import com.a2m.profileservice.model.RequestBusinesses;
 import com.a2m.profileservice.service.RequestBusinessesService;
@@ -37,5 +39,14 @@ public class RequestBusinessesServiceImpl implements RequestBusinessesService {
     @Override
     public RequestBusinesses getRequestBusinessById(String requestId) {
         return null;
+    }
+
+    @Override
+    public RequestBusinesses getRequestBusinessByBusinessId(String businessId) {
+        var requestBusinesses = requestBusinessMapper.getRequestBusinessByBusinessId(businessId);
+        if(requestBusinesses == null) {
+            throw new AppException(ErrorCode.REQUEST_BUSINESS_NOT_FOUND);
+        }
+        return requestBusinesses;
     }
 }
