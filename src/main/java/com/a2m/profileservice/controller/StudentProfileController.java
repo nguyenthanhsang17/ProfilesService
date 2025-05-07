@@ -52,6 +52,7 @@ public class StudentProfileController {
 
     @GetMapping("/viewprofile")
     public ResponseEntity<ApiResponse<student_profilesDTO>> getStudentProfiles(HttpServletRequest request) {
+        System.out.println("request: "+ request);
         String userId = (String) request.getAttribute("userId");
         var api = studentProfileService.getProfileStudentById(userId);
         return ResponseEntity.ok(api);
@@ -104,6 +105,12 @@ public class StudentProfileController {
     public ResponseEntity<?> UpdateProfile(@RequestBody student_profilesDTOForUpdate studentProfilesDTO, HttpServletRequest request) {
         String userId = (String) request.getAttribute("userId");
         var api = studentProfileService.UpdateProfileStudent(studentProfilesDTO, userId);
+        return ResponseEntity.ok(api);
+    }
+
+    @GetMapping("/checkExits")
+    public ResponseEntity<?> checkExits(@RequestParam("userId") String userId) {
+        var api = studentProfileService.checkExits(userId);
         return ResponseEntity.ok(api);
     }
 

@@ -246,4 +246,16 @@ public class StudentProfileServiceImpl implements StudentProfileService {
         apiResponse.setMessage("Update Success");
         return apiResponse;
     }
+
+    @Override
+    public ApiResponse<?> checkExits(String id) {
+        int check = mapper.checkExits(id);
+        if (check == 0) {
+            throw new AppException(ErrorCode.STUDENT_NOT_FOUND);
+        }
+        ApiResponse<?> apiResponse = new ApiResponse<>();
+        apiResponse.setCode(200);
+        apiResponse.setMessage("Student is exist");
+        return apiResponse;
+    }
 }

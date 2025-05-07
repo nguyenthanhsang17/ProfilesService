@@ -15,4 +15,6 @@ public interface StudentProfileService {
     public ApiResponse<Object> UpdateProfileStudent(student_profilesDTOForUpdate student_profilesDTO, String id);
     public ApiResponse<student_profilesDTOForCreate> CreateProfileStudent(student_profilesDTOForCreate student_profilesDTO, String id);
     public ApiResponse<?> updateAvatar(String id, String url);
+
+    public ApiResponse<?> checkExits(String id);
 }
