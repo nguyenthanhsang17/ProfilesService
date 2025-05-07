@@ -3,9 +3,11 @@ package com.a2m.profileservice.controller;
 import com.a2m.profileservice.Authentication.JwtUtil;
 import com.a2m.profileservice.dto.ApiResponse;
 import com.a2m.profileservice.model.ImagesBusiness;
+import com.a2m.profileservice.service.ImageKitUploadService;
 import com.a2m.profileservice.service.ImagesBusinessUploadService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +19,7 @@ import java.util.List;
 @RequestMapping("/api/v1/business/images")
 public class ImagesBusinessController {
 
+    private ImageKitUploadService imageKitUploadService;
     private final ImagesBusinessUploadService imagesBusinessUploadService;
     private final JwtUtil jwtUtil;
 
@@ -80,5 +83,13 @@ public class ImagesBusinessController {
                 .build();
 
         return ResponseEntity.ok(response.getData());
+    }
+
+    @PostMapping(value = "/upload2", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> uploadImagesBusiness2(@RequestPart("files") List<MultipartFile> files, HttpServletRequest request
+    ) {
+        String userId = (String) request.getAttribute("userId");
+        String response = imageKitUploadService.uploadImagesBusiness(files, userId);
+        return ResponseEntity.ok(response);
     }
 }

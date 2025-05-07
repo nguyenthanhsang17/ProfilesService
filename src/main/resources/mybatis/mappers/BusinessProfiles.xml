@@ -74,6 +74,20 @@
         WHERE profile_id = #{profileId}
     </select>
 
+    <update id="updateBusinessProfileAfterFix" parameterType="com.a2m.profileservice.model.BusinessProfiles">
+        UPDATE profile_service.business_profiles
+        SET company_name = #{companyName},
+            industry = #{industry},
+            company_info = #{companyInfo},
+            website_url = #{websiteUrl},
+            email = #{email},
+            phone_number = #{phoneNumber},
+            address = #{address},
+            updated_at = NOW()
+        WHERE profile_id = #{profileId}
+          AND is_deleted = false
+    </update>
+
 
 
 </mapper>

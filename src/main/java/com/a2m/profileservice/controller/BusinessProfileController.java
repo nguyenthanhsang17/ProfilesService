@@ -2,6 +2,7 @@ package com.a2m.profileservice.controller;
 
 import com.a2m.profileservice.Authentication.JwtUtil;
 import com.a2m.profileservice.dto.ApiResponse;
+import com.a2m.profileservice.dto.BusinessProfileDTOs.BusinessProfilesForUpdate;
 import com.a2m.profileservice.model.BusinessProfiles;
 import com.a2m.profileservice.service.BusinessProfileService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -102,7 +103,7 @@ public class BusinessProfileController {
 
     @PutMapping("/update")
     public ResponseEntity<ApiResponse<BusinessProfiles>> updateBusinessProfile(
-            @RequestBody BusinessProfiles businessProfiles,
+            @RequestBody BusinessProfilesForUpdate businessProfiles,
             HttpServletRequest request
     ) {
         try {
@@ -115,12 +116,11 @@ public class BusinessProfileController {
             }
 
             String businessId = jwtUtil.extractUserId(authHeader.substring(7));
-            BusinessProfiles updatedBusiness = businessProfileService.updateBusinessProfile(businessProfiles, businessId);
+            var updatedBusiness = businessProfileService.updateBusinessProfileAfterFix(businessProfiles, businessId);
 
             ApiResponse<BusinessProfiles> response = ApiResponse.<BusinessProfiles>builder()
                     .code(1000)
                     .message("Business profile updated successfully")
-                    .data(updatedBusiness)
                     .build();
 
             return ResponseEntity.ok(response);

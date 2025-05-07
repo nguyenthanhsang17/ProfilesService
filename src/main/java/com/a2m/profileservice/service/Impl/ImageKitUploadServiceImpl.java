@@ -1,8 +1,10 @@
 package com.a2m.profileservice.service.Impl;
 
+import com.a2m.profileservice.mapper.ImagesBusinessMapper;
 import com.a2m.profileservice.mapper.RequestStudentMapper;
 import com.a2m.profileservice.mapper.StudentCardMapper;
 import com.a2m.profileservice.mapper.StudentProfilesMapper;
+import com.a2m.profileservice.model.ImagesBusiness;
 import com.a2m.profileservice.model.StudentCard;
 import com.a2m.profileservice.service.ImageKitUploadService;
 import org.json.JSONObject;
@@ -18,8 +20,10 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ImageKitUploadServiceImpl implements ImageKitUploadService {
@@ -30,12 +34,14 @@ public class ImageKitUploadServiceImpl implements ImageKitUploadService {
     private final StudentProfilesMapper mapper;
     private final StudentCardMapper studentCardMapper;
     private final RequestStudentMapper requestStudentMapper;
+    private final ImagesBusinessMapper imagesBusinessMapper;
 
     @Autowired
-    public ImageKitUploadServiceImpl(StudentProfilesMapper mapper, StudentCardMapper studentCardMapper, RequestStudentMapper requestStudentMapper) {
+    public ImageKitUploadServiceImpl(StudentProfilesMapper mapper, StudentCardMapper studentCardMapper, RequestStudentMapper requestStudentMapper, ImagesBusinessMapper imagesBusinessMapper) {
         this.mapper = mapper;
         this.studentCardMapper = studentCardMapper;
         this.requestStudentMapper = requestStudentMapper;
+        this.imagesBusinessMapper = imagesBusinessMapper;
     }
 
     @Override
@@ -81,7 +87,7 @@ public class ImageKitUploadServiceImpl implements ImageKitUploadService {
             RestTemplate restTemplate = new RestTemplate();
 
             StringBuilder responseBuilder = new StringBuilder();
-            String folderPath = "Student/"+profileId;
+            String folderPath = "Student/" + profileId;
             for (MultipartFile file : files) {
                 if (file != null && !file.isEmpty()) {
                     MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
@@ -113,7 +119,7 @@ public class ImageKitUploadServiceImpl implements ImageKitUploadService {
 
             String api = responseBuilder.toString(); // Return response of each upload
             List<String> urls = new ArrayList<>();
-            urls= extractUrlsFromRawJson(api);
+            urls = extractUrlsFromRawJson(api);
 
             for (String url : urls) {
                 studentCardMapper.CreateStudentCard(StudentCard.builder().studentId(profileId).studentCardUrl(url).build());
@@ -125,6 +131,68 @@ public class ImageKitUploadServiceImpl implements ImageKitUploadService {
             return "Error while uploading files: " + e.getMessage();
         }
     }
+
+    @Override
+    public String uploadImagesBusiness(List<MultipartFile> files, String profileId) {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+
+            StringBuilder responseBuilder = new StringBuilder();
+            String folderPath = "Business/" + profileId;
+            for (MultipartFile file : files) {
+                if (file != null && !file.isEmpty()) {
+                    MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+                    body.add("file", new ByteArrayResource(file.getBytes()) {
+                        @Override
+                        public String getFilename() {
+                            return file.getOriginalFilename(); // tên file
+                        }
+                    });
+                    body.add("fileName", file.getOriginalFilename());
+                    body.add("folder", folderPath);
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+                    headers.setBasicAuth(PRIVATE_API_KEY, "");
+
+                    HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(body, headers);
+
+                    ResponseEntity<String> response = restTemplate.postForEntity(
+                            IMAGEKIT_UPLOAD_URL,
+                            request,
+                            String.class
+                    );
+
+                    responseBuilder.append(response.getBody()).append("\n"); // Append each file response
+                } else {
+                    responseBuilder.append("File is empty or invalid.\n");
+                }
+            }
+
+            String api = responseBuilder.toString(); // Return response of each upload
+            List<String> urls = new ArrayList<>();
+            urls = extractUrlsFromRawJson(api);
+
+            for (String url : urls) {
+                ImagesBusiness imagesBusiness = new ImagesBusiness();
+                imagesBusiness.setImageId(UUID.randomUUID().toString());
+                imagesBusiness.setImageUrl(url);
+                imagesBusiness.setBusinessId(profileId);
+                imagesBusiness.setDeleted(false);
+                if (imagesBusiness.getCreatedAt() == null) {
+                    imagesBusiness.setCreatedAt(LocalDateTime.now());
+                }
+
+                imagesBusinessMapper.insertImagesBusiness(imagesBusiness);
+            }
+
+            return api;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error while uploading files: " + e.getMessage();
+        }
+    }
+
     private List<String> extractUrlsFromRawJson(String rawString) {
         List<String> urls = new ArrayList<>();
 
@@ -147,7 +215,7 @@ public class ImageKitUploadServiceImpl implements ImageKitUploadService {
     public String uploadCV(MultipartFile file, String profileId) {
         try {
             RestTemplate restTemplate = new RestTemplate();
-            String folderPath = "CV/"+profileId;
+            String folderPath = "CV/" + profileId;
             MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
             body.add("file", new ByteArrayResource(file.getBytes()) {
                 @Override

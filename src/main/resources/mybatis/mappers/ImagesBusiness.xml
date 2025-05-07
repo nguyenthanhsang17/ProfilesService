@@ -28,7 +28,7 @@
     <!-- Lấy danh sách ảnh của business -->
     <select id="getImagesBusinessByBusinessId" parameterType="String" resultMap="ImagesBusinessResultMap">
         SELECT * FROM profile_service.images_business
-        WHERE business_id = #{businessId} AND is_deleted = false
+        WHERE business_id = #{businessId} AND is_deleted = 0
     </select>
 
     <!-- Lấy ảnh đầu tiên làm avatar -->

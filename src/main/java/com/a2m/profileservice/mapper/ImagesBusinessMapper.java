@@ -16,4 +16,5 @@ public interface ImagesBusinessMapper {
     ImagesBusiness getFirstImageBusinessByBusinessId(@Param("businessId") String businessId);
     ImagesBusiness getImagesBusinessByImageId(@Param("imageId") String imageId);
 
+
 }

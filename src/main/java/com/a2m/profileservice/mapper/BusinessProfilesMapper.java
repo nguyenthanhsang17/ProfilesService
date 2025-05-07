@@ -18,4 +18,7 @@ public interface BusinessProfilesMapper {
 
     int updateBusinessProfile(BusinessProfiles businessProfiles);
     boolean checkProfileExist(@Param("profileId") String profileId);
+
+
+    int updateBusinessProfileAfterFix(BusinessProfiles businessProfiles);
 }
