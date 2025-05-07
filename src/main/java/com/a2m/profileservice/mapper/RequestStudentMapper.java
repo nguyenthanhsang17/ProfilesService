@@ -10,6 +10,7 @@ import java.util.List;
 
 @Mapper
 public interface RequestStudentMapper {
+
     public boolean checkRequestStudentExists(String student_id);
     public boolean checkRequestStudentAlreadyRegistered(String student_id);
     public int SendRequest(String student_id);
@@ -31,5 +32,6 @@ public interface RequestStudentMapper {
 
 
     boolean checkApproved(String id);
+
 
 }

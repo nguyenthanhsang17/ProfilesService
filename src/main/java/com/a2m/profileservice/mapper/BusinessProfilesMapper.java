@@ -26,4 +26,7 @@ public interface BusinessProfilesMapper {
 
     int updateBusinessProfileAfterFix(BusinessProfiles businessProfiles);
 
+    String getCompanyNameById(@Param("profileId") String profileId);
+
+
 }

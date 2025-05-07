@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class RequestBusinessesController {
 
     private final RequestBusinessesService requestBusinessesService;
-    //private final RequestBusinessesService requestBusinessService;
+
     private final JwtUtil jwtUtil;
 
     @PostMapping("/insert-request-business")

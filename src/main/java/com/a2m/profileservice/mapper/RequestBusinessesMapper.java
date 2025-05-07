@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import java.sql.Timestamp;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Mapper
@@ -12,6 +13,7 @@ public interface RequestBusinessesMapper {
 
     int insertRequestBusiness(@Param("requestId") String requestId,
                               @Param("businessId") String businessId);
+
 //    List<RequestBusinesses> getAllRequestBusiness();
 
     RequestBusinesses getRequestBusinessById(@Param("requestId") String requestId);
@@ -30,5 +32,6 @@ public interface RequestBusinessesMapper {
 
 
     RequestBusinesses getRequestBusinessByBusinessId(@Param("businessId") String businessId);
+
 
 }

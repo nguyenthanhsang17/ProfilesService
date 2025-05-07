@@ -13,6 +13,7 @@
         <result property="isDeleted" column="is_deleted" javaType="boolean" jdbcType="TINYINT"/>
     </resultMap>
 
+    <!-- Kiểm tra request sinh viên tồn tại -->
     <select id="checkRequestStudentExists" resultType="boolean">
         SELECT COUNT(*) > 0
         FROM request_students
@@ -21,23 +22,24 @@
           AND is_deleted = 0
     </select>
 
+    <!-- Kiểm tra đã đăng ký hoặc được duyệt -->
     <select id="checkRequestStudentAlreadyRegistered" resultType="boolean">
         SELECT COUNT(*) > 0
         FROM request_students
         WHERE student_id = #{student_id}
-          AND status = 'pending' OR status = 'approve'
+          AND (status = 'pending' OR status = 'approve')
           AND is_deleted = 0
     </select>
 
-
-
+    <!-- Gửi yêu cầu xác thực sinh viên -->
     <insert id="SendRequest">
         INSERT INTO request_students
             (request_id, student_id, reason, send_time, status, is_deleted)
         VALUES
-            (uuid(), #{student_id},null, NOW(), 'pending', 0)
+            (uuid(), #{student_id}, null, NOW(), 'pending', 0)
     </insert>
 
+    <!-- Lấy request mới nhất theo student_id -->
     <select id="GetRequestStudent" parameterType="string" resultType="RequestStudents" resultMap="requestStudentsResultMap">
         SELECT
             request_id,
@@ -56,6 +58,7 @@
             LIMIT 1
     </select>
 
+
     <select id="getAllRequestStudents" resultMap="requestStudentsResultMap">
         SELECT * FROM request_students
         WHERE is_deleted = 0
@@ -70,14 +73,33 @@
         ORDER BY send_time DESC
     </select>
 
+
     <select id="checkApproved" resultType="boolean" parameterType="string">
         SELECT COUNT(1) > 0
         FROM request_students
         WHERE student_id = #{id} AND status = 'approve'
     </select>
 
+    <!-- Lấy tất cả request chưa xoá -->
+    <select id="getAllRequestStudents" resultMap="requestStudentsResultMap">
+        SELECT * FROM request_students
+        WHERE is_deleted = 0
+        ORDER BY send_time DESC
+    </select>
 
+    <!-- Lấy request theo status -->
+    <select id="getRequestStudentByStatus" parameterType="string" resultMap="requestStudentsResultMap">
+        SELECT * FROM request_students
+        WHERE is_deleted = 0 AND status = #{status}
+        ORDER BY send_time DESC
+    </select>
 
+    <!-- Lấy request theo request_id -->
+    <select id="getRequestStudentById" parameterType="string" resultMap="requestStudentsResultMap">
+        SELECT * FROM request_students
+        WHERE request_id = #{requestId}
+          AND is_deleted = 0
+    </select>
 
     <select id="getRequestStudentById" parameterType="string" resultMap="requestStudentsResultMap">
         SELECT * FROM request_students
@@ -113,3 +135,5 @@
     </select>
 
 </mapper>
+
+
