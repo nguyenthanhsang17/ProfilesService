@@ -257,6 +257,19 @@ public class StudentProfileServiceImpl implements StudentProfileService {
         apiResponse.setData(check);
         apiResponse.setMessage("Check Success");
         apiResponse.setCode(200);
+
+        return apiResponse;
+    }
+
+    public ApiResponse<?> checkExits(String id) {
+        int check = mapper.checkExits(id);
+        if (check == 0) {
+            throw new AppException(ErrorCode.STUDENT_NOT_FOUND);
+        }
+        ApiResponse<?> apiResponse = new ApiResponse<>();
+        apiResponse.setCode(200);
+        apiResponse.setMessage("Student is exist");
+
         return apiResponse;
     }
 }

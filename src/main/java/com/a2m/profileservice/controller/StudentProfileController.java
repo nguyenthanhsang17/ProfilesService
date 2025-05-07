@@ -56,6 +56,7 @@ public class StudentProfileController {
 
     @GetMapping("/viewprofile")
     public ResponseEntity<ApiResponse<student_profilesDTO>> getStudentProfiles(HttpServletRequest request) {
+        System.out.println("request: "+ request);
         String userId = (String) request.getAttribute("userId");
         var api = studentProfileService.getProfileStudentById(userId);
         return ResponseEntity.ok(api);
@@ -111,12 +112,20 @@ public class StudentProfileController {
         return ResponseEntity.ok(api);
     }
 
+
     @GetMapping("/checkprofileexits")
     public ResponseEntity<ApiResponse<?>> checkProfileExits(HttpServletRequest request) {
         String userId = (String) request.getAttribute("userId");
         var api = studentProfileService.checkIfExists(userId);
         return ResponseEntity.ok(api);
     }
+
+    @GetMapping("/checkExits")
+    public ResponseEntity<?> checkExits(@RequestParam("userId") String userId) {
+        var api = studentProfileService.checkExits(userId);
+        return ResponseEntity.ok(api);
+    }
+
 
     @GetMapping("/checkprofileApprove")
     public ResponseEntity<ApiResponse<?>> checkProfileApprove(HttpServletRequest request) {
