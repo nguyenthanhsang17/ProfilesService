@@ -75,14 +75,14 @@ public class ImagesBusinessController {
     ) {
         String businessId = (String) jwtUtil.extractUserId(request.getHeader("Authorization").substring(7));
 
-        String res = imagesBusinessUploadService.getFirstImageBusinessByBusinessId(businessId);
-        ApiResponse<String> response = ApiResponse.<String>builder()
+       ImagesBusiness res = imagesBusinessUploadService.getFirstImageBusinessByBusinessId(businessId);
+        ApiResponse<ImagesBusiness> response = ApiResponse.<ImagesBusiness>builder()
                 .code(1000)
                 .message("Get first image successfully")
                 .data(res)
                 .build();
 
-        return ResponseEntity.ok(response.getData());
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping(value = "/upload2", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

@@ -133,12 +133,12 @@ public class ImagesBusinessUploadServiceImpl implements ImagesBusinessUploadServ
     }
 
     @Override
-    public String getFirstImageBusinessByBusinessId(String businessId) {
+    public ImagesBusiness getFirstImageBusinessByBusinessId(String businessId) {
         ImagesBusiness firstImage = imagesBusinessMapper.getFirstImageBusinessByBusinessId(businessId);
         if(firstImage == null) {
             throw new AppException(ErrorCode.BUSINESS_IMAGE_NOT_FOUND);
         }
-        return firstImage.getImageUrl();
+        return firstImage;
     }
 
 

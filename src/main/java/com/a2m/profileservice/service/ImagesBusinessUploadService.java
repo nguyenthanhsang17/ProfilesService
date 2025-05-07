@@ -10,6 +10,6 @@ public interface ImagesBusinessUploadService {
 
     List<ImagesBusiness> getImagesBusinessByBusinessId(String businessId);
 
-    String getFirstImageBusinessByBusinessId(String businessId);
+    ImagesBusiness getFirstImageBusinessByBusinessId(String businessId);
 
 }
