@@ -22,62 +22,72 @@
         <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
     </resultMap>
 
-
-    <!-- Lấy thông tin User theo ID -->
+    <!-- Lấy toàn bộ profile -->
     <select id="getAll" resultMap="studentProfileResultMap">
         SELECT * FROM profile_service.student_profiles
     </select>
 
+    <!-- Lấy theo ID -->
     <select id="getById" resultMap="studentProfileResultMap">
-        SELECT * FROM profile_service.student_profiles where profile_id = #{id}
+        SELECT * FROM profile_service.student_profiles
+        WHERE profile_id = #{id}
     </select>
 
+    <!-- Kiểm tra tồn tại -->
     <select id="checkExits" resultType="int">
         SELECT COUNT(1)
         FROM profile_service.student_profiles
         WHERE profile_id = #{id}
     </select>
 
-
+    <!-- Thêm mới -->
     <insert id="createStudentProfile" parameterType="student_profiles">
         INSERT INTO profile_service.student_profiles (
-        profile_id, full_name, major, date_of_birth, address, university
-        , academic_year_start, academic_year_end, phone_number,
-        is_approved, status, is_deleted, created_at, updated_at
+            profile_id, full_name, major, date_of_birth, address, university,
+            academic_year_start, academic_year_end, phone_number,
+            is_approved, status, is_deleted, created_at, updated_at
         )
         VALUES (
-        #{profileId}, #{fullName}, #{major}, #{dateOfBirth}, #{address},
-        #{university}, #{academicYearStart}, #{academicYearEnd},
-        #{phoneNumber}, 0, 1,
-        0, <!-- isDeleted = 0 -->
-        NOW(), <!-- createdAt = current time -->
-        NOW() <!-- updatedAt = NULL -->
-        )
+                   #{profileId}, #{fullName}, #{major}, #{dateOfBirth}, #{address},
+                   #{university}, #{academicYearStart}, #{academicYearEnd},
+                   #{phoneNumber}, 0, 1,
+                   0, NOW(), NOW()
+               )
     </insert>
 
+    <!-- Cập nhật -->
     <update id="updateStudentProfile" parameterType="student_profiles">
         UPDATE student_profiles
         SET
-        full_name = #{fullName},
-        major = #{major},
-        date_of_birth = #{dateOfBirth},
-        address = #{address},
-        university = #{university},
-        avatar_url = #{avatarUrl},
-        academic_year_start = #{academicYearStart},
-        academic_year_end = #{academicYearEnd},
-        phone_number = #{phoneNumber},
-        updated_at = NOW()  <!-- Cập nhật trường updated_at thành thời gian hiện tại -->
+            full_name = #{fullName},
+            major = #{major},
+            date_of_birth = #{dateOfBirth},
+            address = #{address},
+            university = #{university},
+            avatar_url = #{avatarUrl},
+            academic_year_start = #{academicYearStart},
+            academic_year_end = #{academicYearEnd},
+            phone_number = #{phoneNumber},
+            updated_at = NOW()
         WHERE profile_id = #{profileId}
     </update>
 
-
+    <!-- Cập nhật avatar -->
     <update id="UpdateAvatar">
         UPDATE student_profiles
         SET avatar_url = #{avatar},
             updated_at = NOW()
         WHERE profile_id = #{id}
     </update>
+
+
+    <select id="getStudentName" parameterType="String" resultType="string">
+        SELECT full_name
+        FROM profile_service.student_profiles
+        WHERE profile_id = #{profileId}
+          AND is_deleted = false
+
+    </select>
 
 
     <select id="checkIfExists" resultType="boolean" parameterType="string">
@@ -87,6 +97,5 @@
     </select>
 
 
-
-
 </mapper>
+
