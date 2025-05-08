@@ -176,7 +176,7 @@ public class ImageKitUploadServiceImpl implements ImageKitUploadService {
                 ImagesBusiness imagesBusiness = new ImagesBusiness();
                 imagesBusiness.setImageId(UUID.randomUUID().toString());
                 imagesBusiness.setImageUrl(url);
-                imagesBusiness.setBusinessId(profileId);
+                imagesBusiness.setBusinessId(Business_id);
                 imagesBusiness.setDeleted(false);
                 if (imagesBusiness.getCreatedAt() == null) {
                     imagesBusiness.setCreatedAt(LocalDateTime.now());
