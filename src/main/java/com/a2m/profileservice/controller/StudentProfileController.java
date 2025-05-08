@@ -62,6 +62,12 @@ public class StudentProfileController {
         return ResponseEntity.ok(api);
     }
 
+    @GetMapping("/viewprofile/{studentId}")
+    public ResponseEntity<ApiResponse<student_profilesDTO>> getStudentProfilesById(@PathVariable String studentId) {
+        var api = studentProfileService.getProfileStudentById(studentId);
+        return ResponseEntity.ok(api);
+    }
+
     @GetMapping("/GetForUpdate/{id}")
     public ResponseEntity<ApiResponse<student_profilesDTO>> getStudentProfilesForUpdate(@PathVariable String id) {
         var api = studentProfileService.getProfileStudentById(id);
