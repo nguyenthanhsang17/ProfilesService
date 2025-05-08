@@ -133,12 +133,12 @@ public class ImageKitUploadServiceImpl implements ImageKitUploadService {
     }
 
     @Override
-    public String uploadImagesBusiness(List<MultipartFile> files, String profileId) {
+    public String uploadImagesBusiness(List<MultipartFile> files, String Business_id) {
         try {
             RestTemplate restTemplate = new RestTemplate();
 
             StringBuilder responseBuilder = new StringBuilder();
-            String folderPath = "Business/" + profileId;
+            String folderPath = "Business/" + Business_id;
             for (MultipartFile file : files) {
                 if (file != null && !file.isEmpty()) {
                     MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
