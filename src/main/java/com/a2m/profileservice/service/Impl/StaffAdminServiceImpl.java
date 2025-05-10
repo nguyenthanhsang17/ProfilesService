@@ -5,10 +5,7 @@ import com.a2m.profileservice.dto.response.*;
 import com.a2m.profileservice.exception.AppException;
 import com.a2m.profileservice.exception.EntityNotFoundException;
 import com.a2m.profileservice.exception.ErrorCode;
-import com.a2m.profileservice.mapper.BusinessProfilesMapper;
-import com.a2m.profileservice.mapper.RequestBusinessesMapper;
-import com.a2m.profileservice.mapper.RequestStudentMapper;
-import com.a2m.profileservice.mapper.StudentProfilesMapper;
+import com.a2m.profileservice.mapper.*;
 import com.a2m.profileservice.model.BusinessProfiles;
 import com.a2m.profileservice.model.RequestBusinesses;
 import com.a2m.profileservice.model.RequestStudents;
@@ -27,8 +24,9 @@ public class StaffAdminServiceImpl implements StaffAdminService {
     private final RequestStudentMapper requestStudentMapper;
     private final BusinessProfilesMapper businessProfilesMapper;
     private final StudentProfilesMapper studentProfilesMapper;
+    private final RequestStatsMapper requestStatsMapper;
 
-        @Override
+    @Override
     public List<RequestBusinessResponse> getAllRequestBusinessesWithCompanyName() {
         List<RequestBusinesses> requests = requestBusinessesMapper.getAllRequestBusiness();
         return requests.stream()
@@ -193,4 +191,16 @@ public class StaffAdminServiceImpl implements StaffAdminService {
         }
     }
 
+    @Override
+    public int getTotalPendingRequest(){
+            return requestStatsMapper.countTotalPendingRequests();
+    }
+    @Override
+    public int getPendingStudentRequest(){
+        return requestStatsMapper.countPendingStudentRequests();
+    }
+    @Override
+    public int getPendingBusinessRequest(){
+        return requestStatsMapper.countPendingBusinessRequests();
+    }
 }

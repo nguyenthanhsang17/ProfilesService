@@ -124,4 +124,38 @@ public class StaffAdminController {
                         .build()
         );
     }
+
+    @GetMapping("/pending/total")
+    public ResponseEntity<ApiResponse<Integer>> getTotalPending() {
+        int total = staffAdminService.getTotalPendingRequest();
+        return ResponseEntity.ok(
+                ApiResponse.<Integer>builder()
+                        .message("Get total pending requests successfully")
+                        .data(total)
+                        .build()
+        );
+    }
+
+    @GetMapping("/pending/students")
+    public ResponseEntity<ApiResponse<Integer>> getPendingStudents() {
+        int count = staffAdminService.getPendingStudentRequest();
+        return ResponseEntity.ok(
+                ApiResponse.<Integer>builder()
+                        .message("Get pending student requests successfully")
+                        .data(count)
+                        .build()
+        );
+    }
+
+    @GetMapping("/pending/businesses")
+    public ResponseEntity<ApiResponse<Integer>> getPendingBusinesses() {
+        int count = staffAdminService.getPendingBusinessRequest();
+        return ResponseEntity.ok(
+                ApiResponse.<Integer>builder()
+                        .message("Get pending business requests successfully")
+                        .data(count)
+                        .build()
+        );
+    }
+
 }

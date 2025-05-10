@@ -2,8 +2,6 @@ package com.a2m.profileservice.service;
 
 import com.a2m.profileservice.dto.request.UpdateRequestStatus;
 import com.a2m.profileservice.dto.response.*;
-import com.a2m.profileservice.model.RequestBusinesses;
-import com.a2m.profileservice.model.RequestStudents;
 
 import java.util.List;
 
@@ -31,4 +29,10 @@ public interface StaffAdminService {
     PageResponse<RequestStudentReponse> getRequestStudentByCursor(String status, String cursor, int limit);
 
     PageResponse<RequestBusinessResponse> getRequestBusinessesByCursor(String status, String cursor, int limit);
+
+    int getTotalPendingRequest();
+
+    int getPendingStudentRequest();
+
+    int getPendingBusinessRequest();
 }
