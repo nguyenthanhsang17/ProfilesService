@@ -26,7 +26,9 @@ public class BusinessProfileController {
 //        System.out.println("Auth header = " + authHeader);
         String token = request.getHeader("Authorization").substring(7);
         String role = jwtUtil.extractRoleFromToken2(token);
-
+        System.out.println("Verify request: "+role);
+        System.out.println(role == null||role.equals(""));
+        System.out.println(!role.contains("BUSINESS"));
         if (role == null||role.equals("")) {
             return ResponseEntity.status(403).body(ApiResponse.<BusinessProfiles>builder()
                     .code(403)

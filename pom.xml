@@ -34,6 +34,11 @@
     </properties>
     <dependencies>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
         <!-- JJWT (Java JWT) để tạo và xử lý token -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
