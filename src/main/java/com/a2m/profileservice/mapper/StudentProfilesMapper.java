@@ -3,6 +3,7 @@ package com.a2m.profileservice.mapper;
 import com.a2m.profileservice.model.student_profiles;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.kafka.common.protocol.types.Field;
 
 import java.util.List;
 
@@ -18,6 +19,8 @@ public interface StudentProfilesMapper {
     String getStudentName(@Param("profileId") String profileId);
 
     boolean checkIfExists(String id);
+    List<student_profiles> GetAllStudentProfiles(String search, String cursor, int limit);
+
 
 }
 

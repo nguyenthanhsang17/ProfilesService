@@ -5,6 +5,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -32,6 +34,11 @@ public class JwtFilter extends OncePerRequestFilter {
         String token = extractTokenFromRequest(request);
         System.out.printf("sang: "+token);
         System.out.println(token != null);
+
+        if (token == null) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT token is missing or invalid");
+            return;
+        }
         if (token != null) {
             try {
                 String email = jwtUtil.extractSubject(token);
@@ -46,6 +53,7 @@ public class JwtFilter extends OncePerRequestFilter {
                     request.setAttribute("role", role);
                     request.setAttribute("email", email);
                     System.out.println("User authenticated with email: " + email);
+                    SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(email, null, null));
                 }
             } catch (Exception e) {
                 // Có thể ghi log lỗi: logger.debug("Invalid JWT: " + e.getMessage());
