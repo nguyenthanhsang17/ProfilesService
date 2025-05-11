@@ -2,6 +2,7 @@ package com.a2m.profileservice.service.Impl;
 
 import com.a2m.profileservice.dto.ApiResponse;
 import com.a2m.profileservice.dto.StudentCardDTO.StudentCardDTO;
+import com.a2m.profileservice.dto.response.PageResponse;
 import com.a2m.profileservice.dto.student_profilesDTOs.student_profilesDTO;
 import com.a2m.profileservice.dto.student_profilesDTOs.student_profilesDTOForCreate;
 import com.a2m.profileservice.dto.student_profilesDTOs.student_profilesDTOForUpdate;
@@ -270,6 +271,39 @@ public class StudentProfileServiceImpl implements StudentProfileService {
         apiResponse.setCode(200);
         apiResponse.setMessage("Student is exist");
 
+        return apiResponse;
+    }
+
+    @Override
+    public ApiResponse<PageResponse<student_profilesDTO>> GetStudentProfile(String search,
+                                                                                String cursor,
+                                                                                int limit) {
+        List<student_profiles> student_profiles = mapper.GetAllStudentProfiles(search, cursor, limit);
+        List<student_profilesDTO> studentProfilesDTOS = student_profiles.stream().map(st ->
+            student_profilesDTO.builder().profileId(st.getProfileId())
+                    .fullName(st.getFullName())
+                    .major(st.getMajor())
+                    .dateOfBirth(st.getDateOfBirth())
+                    .address(st.getAddress())
+                    .university(st.getUniversity())
+                    .avatarUrl(st.getAvatarUrl())
+                    .academicYearStart(st.getAcademicYearStart())
+                    .academicYearEnd(st.getAcademicYearEnd())
+                    .phoneNumber(st.getPhoneNumber())
+                    .isApproved(st.isApproved())
+                    .status(st.getStatus())
+                    .isDeleted(st.isDeleted())
+                    .createdAt(st.getCreatedAt())
+                    .updatedAt(st.getUpdatedAt()).build()
+        ).toList();
+        String nextCursor = student_profiles.isEmpty() ? null : student_profiles.get(student_profiles.size() -1).getCreatedAt().toString();
+        PageResponse<student_profilesDTO> pageResponse =  PageResponse.<student_profilesDTO>builder().items(studentProfilesDTOS)
+                .hasMore(student_profiles.size()==limit).nextCursor(nextCursor).build();
+
+        ApiResponse<PageResponse<student_profilesDTO>> apiResponse = new ApiResponse<>();
+        apiResponse.setCode(200);
+        apiResponse.setMessage("Get Success");
+        apiResponse.setData(pageResponse);
         return apiResponse;
     }
 }

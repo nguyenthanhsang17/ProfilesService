@@ -19,8 +19,8 @@ public interface StudentProfilesMapper {
     String getStudentName(@Param("profileId") String profileId);
 
     boolean checkIfExists(String id);
-    List<student_profiles> GetAllStudentProfiles(String search, String cursor, int limit);
-
-
+    List<student_profiles> GetAllStudentProfiles(@Param("search") String search,
+                                               @Param("cursor") String cursor,
+                                               @Param("limit") int limit);
 }
 

@@ -96,6 +96,42 @@
         WHERE profile_id = #{id}
     </select>
 
+    <select id="GetAllStudentProfiles" resultMap="studentProfileResultMap" resultType="StudentProfile">
+        SELECT
+        profile_id,
+        full_name,
+        major,
+        date_of_birth,
+        address,
+        university,
+        avatar_url,
+        academic_year_start,
+        academic_year_end,
+        phone_number,
+        is_approved,
+        status,
+        is_deleted,
+        created_at,
+        updated_at
+        FROM student_profiles
+        <where>
+            <if test="search != null and search != ''">
+                AND (full_name LIKE CONCAT('%', #{search}, '%')
+                OR major LIKE CONCAT('%', #{search}, '%')
+                OR university LIKE CONCAT('%', #{search}, '%'))
+            </if>
+
+            <!-- Điều kiện cho cursor (nếu cursor != null thì áp dụng WHERE cho created_at) -->
+            <if test="cursor != null">
+                AND created_at > #{cursor}
+            </if>
+        </where>
+        ORDER BY created_at ASC
+        LIMIT #{limit}
+    </select>
+
+
+
 
 </mapper>
 

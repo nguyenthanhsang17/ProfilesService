@@ -98,5 +98,41 @@
     </update>
 
 
+    <select id="getAllBusinessProfiles" resultMap="businessProfileResultMap" >
+        SELECT
+        profile_id,
+        company_name,
+        industry,
+        company_info,
+        website_url,
+        tax_code,
+        email,
+        phone_number,
+        address,
+        is_approved,
+        status,
+        is_deleted,
+        created_at,
+        updated_at
+        FROM business_profiles
+        WHERE is_deleted = 0
+        <if test="isApproved != -1">
+            AND is_approved = #{isApproved}
+        </if>
+        <if test="search != null and search != ''">
+            AND (
+            company_name LIKE CONCAT('%', #{search}, '%')
+            OR industry LIKE CONCAT('%', #{search}, '%')
+            OR email LIKE CONCAT('%', #{search}, '%')
+            OR phone_number LIKE CONCAT('%', #{search}, '%')
+            )
+        </if>
+        <if test="cursor != null and cursor != ''">
+            AND profile_id > #{cursor}
+        </if>
+        ORDER BY profile_id ASC
+        LIMIT #{limit}
+    </select>
+
 
 </mapper>

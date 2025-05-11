@@ -1,7 +1,9 @@
 package com.a2m.profileservice.service.Impl;
 
 import com.a2m.profileservice.dto.ApiResponse;
+import com.a2m.profileservice.dto.BusinessProfileDTOs.BusinessProfilesDTO;
 import com.a2m.profileservice.dto.BusinessProfileDTOs.BusinessProfilesForUpdate;
+import com.a2m.profileservice.dto.response.PageResponse;
 import com.a2m.profileservice.exception.AppException;
 import com.a2m.profileservice.exception.ErrorCode;
 import com.a2m.profileservice.mapper.BusinessProfilesMapper;
@@ -10,6 +12,8 @@ import com.a2m.profileservice.model.BusinessProfiles;
 import com.a2m.profileservice.model.ImagesBusiness;
 import com.a2m.profileservice.service.BusinessProfileService;
 import lombok.AllArgsConstructor;
+import org.apache.kafka.common.protocol.types.Field;
+import org.apache.kafka.shaded.com.google.protobuf.Api;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -147,6 +151,68 @@ public class BusinessProfileServiceImpl implements BusinessProfileService {
         api.setCode(200);
         api.setMessage("profile update successful");
         return api;
+    }
+
+    @Override
+    public ApiResponse<PageResponse<BusinessProfilesDTO>> getAllBusinessProfiles(String search, int isApproved, String cursor, int limit) {
+        List<BusinessProfiles> businessProfiles = businessProfilesMapper.getAllBusinessProfiles(search, isApproved, cursor, limit);
+        List<BusinessProfilesDTO> businessProfilesDTOS = businessProfiles.stream().map(bp ->
+                BusinessProfilesDTO.builder()
+                        .profileId(bp.getProfileId())
+                        .companyName(bp.getCompanyName())
+                        .industry(bp.getIndustry())
+                        .companyInfo(bp.getCompanyInfo())
+                        .websiteUrl(bp.getWebsiteUrl())
+                        .taxCode(bp.getTaxCode())
+                        .email(bp.getEmail())
+                        .phoneNumber(bp.getPhoneNumber())
+                        .address(bp.getAddress())
+                        .isApproved(bp.isApproved())
+                        .status(bp.getStatus())
+                        .isDeleted(bp.isDeleted())
+                        .createdAt(bp.getCreatedAt())
+                        .updatedAt(bp.getUpdatedAt()).build()).toList();
+        String nextCursor = businessProfiles.isEmpty() ? null : businessProfiles.get(businessProfiles.size() -1).getCreatedAt().toString();
+        PageResponse<BusinessProfilesDTO> pageResponse = PageResponse.<BusinessProfilesDTO>builder()
+                .items(businessProfilesDTOS)
+                .nextCursor(nextCursor)
+                .hasMore(businessProfilesDTOS.size()==limit).build();
+        ApiResponse<PageResponse<BusinessProfilesDTO>> apiResponse = new ApiResponse<>();
+        apiResponse.setCode(200);
+        apiResponse.setMessage("get business profiles successful");
+        apiResponse.setData(pageResponse);
+        return apiResponse;
+    }
+
+    @Override
+    public BusinessProfilesDTO getBusinessProfileById_2(String profileId) {
+        BusinessProfiles businessProfiles = businessProfilesMapper.getBusinessProfileById(profileId);
+        if(businessProfiles==null){
+            throw new AppException(ErrorCode.BUSINESS_NOT_FOUND);
+        }
+        List<ImagesBusiness> imagesBusinesses = imagesBusinessMapper.getImagesBusinessByBusinessId(profileId);
+
+        BusinessProfilesDTO businessProfilesDTO = new BusinessProfilesDTO();
+        businessProfilesDTO.setProfileId(businessProfiles.getProfileId());
+        businessProfilesDTO.setCompanyName(businessProfiles.getCompanyName());
+        businessProfilesDTO.setIndustry(businessProfiles.getIndustry());
+        businessProfilesDTO.setCompanyInfo(businessProfiles.getCompanyInfo());
+        businessProfilesDTO.setWebsiteUrl(businessProfiles.getWebsiteUrl());
+        businessProfilesDTO.setTaxCode(businessProfiles.getTaxCode());
+        businessProfilesDTO.setEmail(businessProfiles.getEmail());
+        businessProfilesDTO.setPhoneNumber(businessProfiles.getPhoneNumber());
+        businessProfilesDTO.setAddress(businessProfiles.getAddress());
+        businessProfilesDTO.setDeleted(businessProfiles.isDeleted());
+        businessProfilesDTO.setCreatedAt(businessProfiles.getCreatedAt());
+        businessProfilesDTO.setUpdatedAt(businessProfiles.getUpdatedAt());
+        businessProfilesDTO.setStatus(businessProfiles.getStatus());
+        businessProfilesDTO.setApproved(businessProfiles.isApproved());
+
+
+        List<String> img_url = imagesBusinesses.stream().map(ImagesBusiness::getImageId).collect(Collectors.toList());
+        businessProfilesDTO.setImageBusiness(img_url);
+
+        return businessProfilesDTO;
     }
 
     private List<String> getDifference(List<String> oldid, List<String> newids) {
