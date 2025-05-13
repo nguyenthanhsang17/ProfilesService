@@ -1,6 +1,7 @@
 package com.a2m.profileservice.service;
 
 import com.a2m.profileservice.dto.ApiResponse;
+import com.a2m.profileservice.dto.Paging.PageResult;
 import com.a2m.profileservice.dto.response.PageResponse;
 import com.a2m.profileservice.dto.student_profilesDTOs.student_profilesDTO;
 import com.a2m.profileservice.dto.student_profilesDTOs.student_profilesDTOForCreate;
@@ -21,8 +22,11 @@ public interface StudentProfileService {
     public ApiResponse<Boolean> checkIfExists(String id);
 
     public ApiResponse<?> checkExits(String id);
-    public ApiResponse<PageResponse<student_profilesDTO>> GetStudentProfile(String search,
-                                                                                String cursor,
-                                                                                int limit);
+    public ApiResponse<PageResult<student_profilesDTO>> GetStudentProfile(String search,
+                                                                          int isApproved,
+                                                                          int offset,
+                                                                          int limit);
+
+    public boolean updateStatusStudent(String id);
 
 }

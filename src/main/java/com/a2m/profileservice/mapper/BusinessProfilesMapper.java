@@ -29,8 +29,14 @@ public interface BusinessProfilesMapper {
 
     List<BusinessProfiles> getAllBusinessProfiles(@Param("search") String search,
                                                   @Param("isApproved") int isApproved,
-                                                  @Param("cursor") String cursor,
+                                                  @Param("offset") int offset,
                                                   @Param("limit") int limit);
 
+    int CountAllBusinessProfiles(@Param("search") String search,
+                                 @Param("isApproved") int isApproved);
+
+    String getStatusBusinessProfileById(@Param("profileId") String profileId);
+
+    int updateStatusBusinessProfileById(@Param("profileId") String profileId,@Param("status") String status);
 
 }

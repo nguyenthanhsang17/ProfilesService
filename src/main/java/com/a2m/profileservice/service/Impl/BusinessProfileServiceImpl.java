@@ -3,6 +3,7 @@ package com.a2m.profileservice.service.Impl;
 import com.a2m.profileservice.dto.ApiResponse;
 import com.a2m.profileservice.dto.BusinessProfileDTOs.BusinessProfilesDTO;
 import com.a2m.profileservice.dto.BusinessProfileDTOs.BusinessProfilesForUpdate;
+import com.a2m.profileservice.dto.Paging.PageResult;
 import com.a2m.profileservice.dto.response.PageResponse;
 import com.a2m.profileservice.exception.AppException;
 import com.a2m.profileservice.exception.ErrorCode;
@@ -154,8 +155,8 @@ public class BusinessProfileServiceImpl implements BusinessProfileService {
     }
 
     @Override
-    public ApiResponse<PageResponse<BusinessProfilesDTO>> getAllBusinessProfiles(String search, int isApproved, String cursor, int limit) {
-        List<BusinessProfiles> businessProfiles = businessProfilesMapper.getAllBusinessProfiles(search, isApproved, cursor, limit);
+    public ApiResponse<PageResult<BusinessProfilesDTO>> getAllBusinessProfiles(String search, int isApproved, int offset, int limit) {
+        List<BusinessProfiles> businessProfiles = businessProfilesMapper.getAllBusinessProfiles(search, isApproved, offset, limit);
         List<BusinessProfilesDTO> businessProfilesDTOS = businessProfiles.stream().map(bp ->
                 BusinessProfilesDTO.builder()
                         .profileId(bp.getProfileId())
@@ -172,15 +173,18 @@ public class BusinessProfileServiceImpl implements BusinessProfileService {
                         .isDeleted(bp.isDeleted())
                         .createdAt(bp.getCreatedAt())
                         .updatedAt(bp.getUpdatedAt()).build()).toList();
-        String nextCursor = businessProfiles.isEmpty() ? null : businessProfiles.get(businessProfiles.size() -1).getCreatedAt().toString();
-        PageResponse<BusinessProfilesDTO> pageResponse = PageResponse.<BusinessProfilesDTO>builder()
-                .items(businessProfilesDTOS)
-                .nextCursor(nextCursor)
-                .hasMore(businessProfilesDTOS.size()==limit).build();
-        ApiResponse<PageResponse<BusinessProfilesDTO>> apiResponse = new ApiResponse<>();
+        int count  = businessProfilesMapper.CountAllBusinessProfiles(search, isApproved);
+        PageResult<BusinessProfilesDTO> pageResult = new PageResult<>();
+        int totalPage = (int) Math.ceil((double) count / (double) limit);
+        pageResult.setTotalPages(totalPage);
+        pageResult.setItems(businessProfilesDTOS);
+        pageResult.setTotalCount(count);
+        pageResult.setOffset(offset+1);
+        pageResult.setLimit(limit);
+        ApiResponse<PageResult<BusinessProfilesDTO>> apiResponse = new ApiResponse<>();
         apiResponse.setCode(200);
         apiResponse.setMessage("get business profiles successful");
-        apiResponse.setData(pageResponse);
+        apiResponse.setData(pageResult);
         return apiResponse;
     }
 
@@ -213,6 +217,25 @@ public class BusinessProfileServiceImpl implements BusinessProfileService {
         businessProfilesDTO.setImageBusiness(img_url);
 
         return businessProfilesDTO;
+    }
+
+    @Override
+    public boolean updateStatusBusinessProfileById(String profileId) {
+        String statusBusiness = businessProfilesMapper.getStatusBusinessProfileById(profileId);
+        if(statusBusiness==null){
+            throw new AppException(ErrorCode.BUSINESS_NOT_FOUND);
+        }
+        int r = 0;
+        if(statusBusiness.equals("active")){
+            r= businessProfilesMapper.updateStatusBusinessProfileById(profileId, "inactive");
+        }
+        else if(statusBusiness.equals("inactive")){
+            r= businessProfilesMapper.updateStatusBusinessProfileById(profileId, "active");
+        }
+        if(r==0){
+            throw new AppException(ErrorCode.BUSINESS_NOT_FOUND);
+        }
+        return true;
     }
 
     private List<String> getDifference(List<String> oldid, List<String> newids) {

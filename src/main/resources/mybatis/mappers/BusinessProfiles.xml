@@ -98,7 +98,7 @@
     </update>
 
 
-    <select id="getAllBusinessProfiles" resultMap="businessProfileResultMap" >
+    <select id="getAllBusinessProfiles" resultMap="businessProfileResultMap">
         SELECT
         profile_id,
         company_name,
@@ -115,24 +115,62 @@
         created_at,
         updated_at
         FROM business_profiles
-        WHERE is_deleted = 0
-        <if test="isApproved != -1">
-            AND is_approved = #{isApproved}
-        </if>
-        <if test="search != null and search != ''">
-            AND (
-            company_name LIKE CONCAT('%', #{search}, '%')
-            OR industry LIKE CONCAT('%', #{search}, '%')
-            OR email LIKE CONCAT('%', #{search}, '%')
-            OR phone_number LIKE CONCAT('%', #{search}, '%')
-            )
-        </if>
-        <if test="cursor != null and cursor != ''">
-            AND profile_id > #{cursor}
-        </if>
+        WHERE 1=1
+        <where>
+            <if test="isApproved != -1">
+                AND is_approved = #{isApproved}
+            </if>
+            <if test="search != null and search != ''">
+                AND (
+                company_name LIKE CONCAT('%', #{search}, '%')
+                OR industry LIKE CONCAT('%', #{search}, '%')
+                OR email LIKE CONCAT('%', #{search}, '%')
+                OR phone_number LIKE CONCAT('%', #{search}, '%')
+                )
+            </if>
+        </where>
         ORDER BY profile_id ASC
-        LIMIT #{limit}
+        LIMIT #{offset}, #{limit}  <!-- Sử dụng LIMIT với offset và limit -->
     </select>
+
+    <select id="CountAllBusinessProfiles" resultType="int">
+        SELECT COUNT(*)
+        FROM business_profiles
+        <where>
+            <!-- Điều kiện cho isApproved -->
+            <if test="isApproved != -1">
+                AND is_approved = #{isApproved}
+            </if>
+
+            <!-- Điều kiện cho search -->
+            <if test="search != null and search != ''">
+                AND (
+                company_name LIKE CONCAT('%', #{search}, '%')
+                OR industry LIKE CONCAT('%', #{search}, '%')
+                OR email LIKE CONCAT('%', #{search}, '%')
+                OR phone_number LIKE CONCAT('%', #{search}, '%')
+                )
+            </if>
+        </where>
+    </select>
+
+
+
+
+
+    <select id="getStatusBusinessProfileById" resultType="String">
+        SELECT status
+        FROM business_profiles
+        WHERE profile_id = #{profileId}
+    </select>
+
+
+    <update id="updateStatusBusinessProfileById">
+        UPDATE business_profiles
+        SET status = #{status}
+        WHERE profile_id = #{profileId}
+    </update>
+
 
 
 </mapper>
