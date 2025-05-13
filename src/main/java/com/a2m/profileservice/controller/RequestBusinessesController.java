@@ -27,7 +27,7 @@ public class RequestBusinessesController {
     ){
         String token = request.getHeader("Authorization").substring(7);
         String role = jwtUtil.extractRoleFromToken2(token);
-
+        System.out.println("insert request: "+role);
         if (role == null||role.equals("")) {
             return ResponseEntity.status(403).body(ApiResponse.<RequestBusinesses>builder()
                     .code(403)
