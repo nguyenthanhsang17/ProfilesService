@@ -114,7 +114,6 @@
         created_at,
         updated_at
         FROM student_profiles
-        WHERE 1=1
         <where>
             <if test="search != null and search != ''">
                 AND (full_name LIKE CONCAT('%', #{search}, '%')
@@ -134,7 +133,6 @@
     <select id="CountAllStudentProfiles" resultType="int">
         SELECT COUNT(*)
         FROM student_profiles
-        WHERE 1=1
         <where>
             <if test="search != null and search != ''">
                 AND (full_name LIKE CONCAT('%', #{search}, '%')
