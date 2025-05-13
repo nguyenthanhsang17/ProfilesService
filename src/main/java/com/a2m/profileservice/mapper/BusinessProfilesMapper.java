@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Mapper;
 import com.a2m.profileservice.model.BusinessProfiles;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 @Mapper
@@ -26,7 +27,16 @@ public interface BusinessProfilesMapper {
 
     int updateBusinessProfileAfterFix(BusinessProfiles businessProfiles);
 
+    List<BusinessProfiles> getAllBusinessProfiles(@Param("search") String search,
+                                                  @Param("isApproved") int isApproved,
+                                                  @Param("offset") int offset,
+                                                  @Param("limit") int limit);
 
+    int CountAllBusinessProfiles(@Param("search") String search,
+                                 @Param("isApproved") int isApproved);
 
+    String getStatusBusinessProfileById(@Param("profileId") String profileId);
+
+    int updateStatusBusinessProfileById(@Param("profileId") String profileId,@Param("status") String status);
 
 }

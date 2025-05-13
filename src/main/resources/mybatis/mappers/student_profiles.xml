@@ -96,6 +96,78 @@
         WHERE profile_id = #{id}
     </select>
 
+    <select id="GetAllStudentProfiles" resultMap="studentProfileResultMap" resultType="student_profiles">
+        SELECT
+        profile_id,
+        full_name,
+        major,
+        date_of_birth,
+        address,
+        university,
+        avatar_url,
+        academic_year_start,
+        academic_year_end,
+        phone_number,
+        is_approved,
+        status,
+        is_deleted,
+        created_at,
+        updated_at
+        FROM student_profiles
+        WHERE 1=1
+        <where>
+            <if test="search != null and search != ''">
+                AND (full_name LIKE CONCAT('%', #{search}, '%')
+                OR major LIKE CONCAT('%', #{search}, '%')
+                OR university LIKE CONCAT('%', #{search}, '%'))
+            </if>
+
+            <!-- Điều kiện cho isApproved -->
+            <if test="isApproved != -1">
+                AND is_approved = #{isApproved}
+            </if>
+        </where>
+        ORDER BY created_at ASC
+        LIMIT #{offset}, #{limit}  <!-- Sử dụng LIMIT với offset và limit -->
+    </select>
+
+    <select id="CountAllStudentProfiles" resultType="int">
+        SELECT COUNT(*)
+        FROM student_profiles
+        WHERE 1=1
+        <where>
+            <if test="search != null and search != ''">
+                AND (full_name LIKE CONCAT('%', #{search}, '%')
+                OR major LIKE CONCAT('%', #{search}, '%')
+                OR university LIKE CONCAT('%', #{search}, '%'))
+            </if>
+
+            <!-- Điều kiện cho isApproved -->
+            <if test="isApproved != -1">
+                AND is_approved = #{isApproved}
+            </if>
+        </where>
+    </select>
+
+
+
+    <select id="getStatusStudent" resultType="String">
+        SELECT status
+        FROM student_profiles
+        WHERE profile_id = #{id}
+    </select>
+
+
+    <update id="updateStatusStudent">
+        UPDATE student_profiles
+        SET status = #{status}
+        WHERE profile_id = #{id}
+    </update>
+
+
+
+
+
 
 </mapper>
 

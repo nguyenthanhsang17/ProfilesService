@@ -1,9 +1,12 @@
 package com.a2m.profileservice.service;
 
 import com.a2m.profileservice.dto.ApiResponse;
+import com.a2m.profileservice.dto.Paging.PageResult;
+import com.a2m.profileservice.dto.response.PageResponse;
 import com.a2m.profileservice.dto.student_profilesDTOs.student_profilesDTO;
 import com.a2m.profileservice.dto.student_profilesDTOs.student_profilesDTOForCreate;
 import com.a2m.profileservice.dto.student_profilesDTOs.student_profilesDTOForUpdate;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -19,5 +22,11 @@ public interface StudentProfileService {
     public ApiResponse<Boolean> checkIfExists(String id);
 
     public ApiResponse<?> checkExits(String id);
+    public ApiResponse<PageResult<student_profilesDTO>> GetStudentProfile(String search,
+                                                                          int isApproved,
+                                                                          int offset,
+                                                                          int limit);
+
+    public boolean updateStatusStudent(String id);
 
 }

@@ -10,9 +10,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PageResult<T, B> {
-    List<T> data;
-    B cursor;
-    private boolean hasNext;
+public class PageResult<T> {
+    private List<T> items;
+    private int offset;
     private int totalCount;
+    private int totalPages;
+    private int limit;
 }

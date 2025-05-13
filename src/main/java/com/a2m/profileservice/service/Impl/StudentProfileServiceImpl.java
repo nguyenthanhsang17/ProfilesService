@@ -1,7 +1,9 @@
 package com.a2m.profileservice.service.Impl;
 
 import com.a2m.profileservice.dto.ApiResponse;
+import com.a2m.profileservice.dto.Paging.PageResult;
 import com.a2m.profileservice.dto.StudentCardDTO.StudentCardDTO;
+import com.a2m.profileservice.dto.response.PageResponse;
 import com.a2m.profileservice.dto.student_profilesDTOs.student_profilesDTO;
 import com.a2m.profileservice.dto.student_profilesDTOs.student_profilesDTOForCreate;
 import com.a2m.profileservice.dto.student_profilesDTOs.student_profilesDTOForUpdate;
@@ -179,14 +181,14 @@ public class StudentProfileServiceImpl implements StudentProfileService {
         var stdcard = studentCardMapper.getStudentCardByStudentId(id);
         List<String> studentcardidsold = new ArrayList<>();
         studentcardidsold = stdcard.stream().map(s -> s.getCardId()).collect(Collectors.toList());
-        System.out.println("cardid old"+studentcardidsold);
+        System.out.println("cardid old" + studentcardidsold);
         List<String> studentCardUrlId = student_profilesDTO.getStudentCardUrlId();
         if (studentCardUrlId == null) {
             studentCardUrlId = new ArrayList<>(); // hoặc return luôn nếu null là hợp lệ
         }
         List<String> diff = getDifference(studentcardidsold, studentCardUrlId);
 
-        System.out.println("cardid diff: "+diff.size());
+        System.out.println("cardid diff: " + diff.size());
         for (String s : diff) {
             int r = studentCardMapper.DeleteStudentCard(s);
             if (r != 1) {
@@ -250,7 +252,7 @@ public class StudentProfileServiceImpl implements StudentProfileService {
     @Override
     public ApiResponse<Boolean> checkIfExists(String id) {
         var check = mapper.checkIfExists(id);
-        if (!check){
+        if (!check) {
             throw new AppException(ErrorCode.STUDENT_NOT_PROFILE);
         }
         ApiResponse<Boolean> apiResponse = new ApiResponse<>();
@@ -271,5 +273,62 @@ public class StudentProfileServiceImpl implements StudentProfileService {
         apiResponse.setMessage("Student is exist");
 
         return apiResponse;
+    }
+
+    @Override
+    public ApiResponse<PageResult<student_profilesDTO>> GetStudentProfile(String search,
+                                                                          int isApproved,
+                                                                          int offset,
+                                                                          int limit) {
+        List<student_profiles> student_profiles = mapper.GetAllStudentProfiles(search, isApproved, offset, limit);
+        int count = mapper.CountAllStudentProfiles(search, isApproved);
+        List<student_profilesDTO> studentProfilesDTOS = student_profiles.stream().map(st ->
+                student_profilesDTO.builder().profileId(st.getProfileId())
+                        .fullName(st.getFullName())
+                        .major(st.getMajor())
+                        .dateOfBirth(st.getDateOfBirth())
+                        .address(st.getAddress())
+                        .university(st.getUniversity())
+                        .avatarUrl(st.getAvatarUrl())
+                        .academicYearStart(st.getAcademicYearStart())
+                        .academicYearEnd(st.getAcademicYearEnd())
+                        .phoneNumber(st.getPhoneNumber())
+                        .isApproved(st.isApproved())
+                        .status(st.getStatus())
+                        .isDeleted(st.isDeleted())
+                        .createdAt(st.getCreatedAt())
+                        .updatedAt(st.getUpdatedAt()).build()
+        ).toList();
+        PageResult<student_profilesDTO> pageResult = new PageResult<>();
+        pageResult.setItems(studentProfilesDTOS);
+        pageResult.setTotalCount(count);
+        int totalPage = (int) Math.ceil((double) count / (double) limit);
+        pageResult.setTotalPages(totalPage);
+        pageResult.setOffset(offset+1);
+        pageResult.setLimit(limit);
+        ApiResponse<PageResult<student_profilesDTO>> apiResponse = new ApiResponse<>();
+        apiResponse.setCode(200);
+        apiResponse.setMessage("Get Success");
+        apiResponse.setData(pageResult);
+        return apiResponse;
+    }
+
+    @Override
+    public boolean updateStatusStudent(String id) {
+        String status = mapper.getStatusStudent(id);
+        if (status == null) {
+            throw new AppException(ErrorCode.STUDENT_NOT_FOUND);
+        }
+        int r = 0;
+        if (status.equals("active")) {
+            r = mapper.updateStatusStudent(id, "inactive");
+        } else if (status.equals("inactive")) {
+            r = mapper.updateStatusStudent(id, "active");
+        }
+
+        if (r == 0) {
+            throw new AppException(ErrorCode.STUDENT_NOT_PROFILE);
+        }
+        return true;
     }
 }
