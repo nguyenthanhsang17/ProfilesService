@@ -1,5 +1,6 @@
 package com.a2m.profileservice.service.Impl;
 
+import com.a2m.profileservice.dto.NotificationMessage;
 import com.a2m.profileservice.dto.request.UpdateRequestStatus;
 import com.a2m.profileservice.dto.response.*;
 import com.a2m.profileservice.exception.AppException;
@@ -12,6 +13,8 @@ import com.a2m.profileservice.model.RequestStudents;
 import com.a2m.profileservice.model.student_profiles;
 import com.a2m.profileservice.service.StaffAdminService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -25,6 +28,9 @@ public class StaffAdminServiceImpl implements StaffAdminService {
     private final BusinessProfilesMapper businessProfilesMapper;
     private final StudentProfilesMapper studentProfilesMapper;
     private final RequestStatsMapper requestStatsMapper;
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+
 
     @Override
     public List<RequestBusinessResponse> getAllRequestBusinessesWithCompanyName() {
@@ -133,18 +139,41 @@ public class StaffAdminServiceImpl implements StaffAdminService {
 
     @Override
     public void updateRequestBusinessStatus(UpdateRequestStatus request) {
-        if (!request.getStatus().equalsIgnoreCase("approve") && !request.getStatus().equalsIgnoreCase("reject")) {
+        String status = request.getStatus().toLowerCase();
+        if (!status.equals("approve") && !status.equals("reject")) {
             throw new AppException(ErrorCode.VALIDATION_ERROR);
         }
 
-        getRequestBusinessesById(request.getId());
+        RequestBusinessDetailResponse detail = getRequestBusinessesById(request.getId());
+        requestBusinessesMapper.updateRequestBusinessStatus(request.getId(), status);
 
-        requestBusinessesMapper.updateRequestBusinessStatus(request.getId(), request.getStatus());
-
-        if (request.getStatus().equalsIgnoreCase("reject")) {
+        if (status.equals("reject")) {
             requestBusinessesMapper.updateRejectReason(request.getId(), request.getReason());
         }
+
+        BusinessProfiles business = detail.getBusinessProfile();
+
+        String title;
+        String message;
+        String type;
+        String url;
+
+        if (status.equals("approve")) {
+            title = "Tài khoản doanh nghiệp của bạn đã được xác minh!";
+            message = "Bạn đã có thể đăng bài tuyển dụng và quản lý công ty.";
+            type = "ACCOUNT_APPROVED";
+            url = "/business/dashboard";
+        } else {
+            title = "Tài khoản doanh nghiệp của bạn KHÔNG được xác minh.";
+            message = request.getReason() != null ? request.getReason() : "Hồ sơ chưa đủ điều kiện xác minh.";
+            type = "ACCOUNT_REJECTED";
+            url = "/business/profile";
+        }
+
+        sendBusinessNotification(business.getProfileId(), title, message, type, url);
     }
+
+
 
     //cursor pagination
 
@@ -203,4 +232,18 @@ public class StaffAdminServiceImpl implements StaffAdminService {
     public int getPendingBusinessRequest(){
         return requestStatsMapper.countPendingBusinessRequests();
     }
+
+
+    //helper
+    private void sendBusinessNotification(String userId, String title, String content, String type, String link) {
+        NotificationMessage msg = new NotificationMessage(
+                userId,
+                title,
+                content,
+                type,
+                link
+        );
+        amqpTemplate.convertAndSend("notification.exchange", "notify.account." + type.toLowerCase(), msg);
+    }
+
 }
