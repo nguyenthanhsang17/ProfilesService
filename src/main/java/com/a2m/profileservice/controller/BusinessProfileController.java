@@ -102,6 +102,17 @@ public class BusinessProfileController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/business-profile/{profileId}")
+    public ResponseEntity<ApiResponse<BusinessProfiles>> getBusinessProfileById(@PathVariable String profileId) {
+        BusinessProfiles existingBusiness = businessProfileService.getBusinessProfileByIdAny(profileId);
+        ApiResponse<BusinessProfiles> response = ApiResponse.<BusinessProfiles>builder()
+                .code(1000)
+                .data(existingBusiness)
+                .message("Business profile found")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
 
     @PutMapping("/update")
     public ResponseEntity<ApiResponse<BusinessProfiles>> updateBusinessProfile(
