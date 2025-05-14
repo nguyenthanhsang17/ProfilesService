@@ -2,7 +2,10 @@ package com.a2m.profileservice.controller;
 
 import com.a2m.profileservice.Authentication.JwtUtil;
 import com.a2m.profileservice.dto.ApiResponse;
+import com.a2m.profileservice.dto.BusinessProfileDTOs.BusinessProfilesDTO;
 import com.a2m.profileservice.dto.BusinessProfileDTOs.BusinessProfilesForUpdate;
+import com.a2m.profileservice.exception.AppException;
+import com.a2m.profileservice.exception.ErrorCode;
 import com.a2m.profileservice.model.BusinessProfiles;
 import com.a2m.profileservice.service.BusinessProfileService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -111,6 +114,27 @@ public class BusinessProfileController {
                 .message("Business profile found")
                 .build();
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/business-profile2/{profileId}")
+    public ResponseEntity<ApiResponse<BusinessProfilesDTO>> getBusinessProfileById2(@PathVariable String profileId) {
+//        BusinessProfiles existingBusiness = businessProfileService.getBusinessProfileByIdAny(profileId);
+//        ApiResponse<BusinessProfiles> response = ApiResponse.<BusinessProfiles>builder()
+//                .code(1000)
+//                .data(existingBusiness)
+//                .message("Business profile found")
+//                .build();
+//        return ResponseEntity.ok(response);
+
+        var api = businessProfileService.getBusinessProfileById_2(profileId);
+        if(api.isApproved()==false){
+            throw new AppException(ErrorCode.BUSINESS_NOT_FOUND);
+        }
+        ApiResponse<BusinessProfilesDTO> apiResponse = new ApiResponse<>();
+        apiResponse.setData(api);
+        apiResponse.setMessage("Success");
+        apiResponse.setCode(200);
+        return ResponseEntity.ok(apiResponse);
     }
 
 
