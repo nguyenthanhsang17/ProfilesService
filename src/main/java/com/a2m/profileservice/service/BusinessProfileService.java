@@ -13,7 +13,11 @@ public interface BusinessProfileService {
     BusinessProfiles businessVerifycation(BusinessProfiles businessProfiles, String profileId);
     Optional<String> findByTaxCode(String taxCode);
 
+    // lấy thông tin của bản thân business
     BusinessProfiles getBusinessProfileById(@Param("profileId") String profileId);
+
+    // lấy thông tin của business theo id bất kì
+    BusinessProfiles getBusinessProfileByIdAny(@Param("profileId") String profileId);
 
     BusinessProfiles updateBusinessProfile(BusinessProfiles businessProfiles, @Param("profileId") String businessId);
     public ApiResponse<Boolean> checkProfileExist(String profileId);

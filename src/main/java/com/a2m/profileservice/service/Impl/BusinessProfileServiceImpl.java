@@ -67,6 +67,15 @@ public class BusinessProfileServiceImpl implements BusinessProfileService {
     }
 
     @Override
+    public BusinessProfiles getBusinessProfileByIdAny(String profileId) {
+        BusinessProfiles existingBusinessProfile = businessProfilesMapper.getBusinessProfileById(profileId);
+        if(existingBusinessProfile == null){
+            throw new AppException(ErrorCode.BUSINESS_NOT_FOUND);
+        }
+        return existingBusinessProfile;
+    }
+
+    @Override
     public BusinessProfiles updateBusinessProfile(BusinessProfiles businessProfiles, String businessId) {
         BusinessProfiles existingBusinessProfile = businessProfilesMapper.getBusinessProfileById(businessId);
         if(existingBusinessProfile == null){
