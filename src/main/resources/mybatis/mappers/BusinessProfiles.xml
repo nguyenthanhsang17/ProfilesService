@@ -115,7 +115,6 @@
         created_at,
         updated_at
         FROM business_profiles
-        WHERE 1=1
         <where>
             <if test="isApproved != -1">
                 AND is_approved = #{isApproved}
