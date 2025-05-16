@@ -15,7 +15,17 @@ import com.a2m.profileservice.service.BusinessProfileService;
 import lombok.AllArgsConstructor;
 import org.apache.kafka.common.protocol.types.Field;
 import org.apache.kafka.shaded.com.google.protobuf.Api;
+import org.json.JSONObject;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,6 +37,10 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class BusinessProfileServiceImpl implements BusinessProfileService {
+
+    private static final String IMAGEKIT_UPLOAD_URL = "https://upload.imagekit.io/api/v1/files/upload";
+    private static final String PRIVATE_API_KEY = "private_e2V3fNLKwK0pGwSrEmFH+iKQtks=";
+    private static final String PUBLIC_API_KEY = "public_Q+yi7A0O9A+joyXIoqM4TpVqOrQ=";
 
     private BusinessProfilesMapper businessProfilesMapper;
     private ImagesBusinessMapper imagesBusinessMapper;
@@ -220,9 +234,9 @@ public class BusinessProfileServiceImpl implements BusinessProfileService {
         businessProfilesDTO.setUpdatedAt(businessProfiles.getUpdatedAt());
         businessProfilesDTO.setStatus(businessProfiles.getStatus());
         businessProfilesDTO.setApproved(businessProfiles.isApproved());
+        businessProfilesDTO.setImage_Avatar_url(businessProfiles.getImage_Avatar_url());
 
-
-        List<String> img_url = imagesBusinesses.stream().map(ImagesBusiness::getImageId).collect(Collectors.toList());
+        List<String> img_url = imagesBusinesses.stream().map(ImagesBusiness::getImageUrl).collect(Collectors.toList());
         businessProfilesDTO.setImageBusiness(img_url);
 
         return businessProfilesDTO;
@@ -245,6 +259,45 @@ public class BusinessProfileServiceImpl implements BusinessProfileService {
             throw new AppException(ErrorCode.BUSINESS_NOT_FOUND);
         }
         return true;
+    }
+
+    @Override
+    public String addImagesAvatarBusiness(MultipartFile file, String businessId) {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            String folderPath = "Business/" + businessId;
+            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+            body.add("file", new ByteArrayResource(file.getBytes()) {
+                @Override
+                public String getFilename() {
+                    return file.getOriginalFilename();
+                }
+            });
+            body.add("fileName", file.getOriginalFilename());
+            body.add("folder", folderPath);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+            headers.setBasicAuth(PRIVATE_API_KEY, "");
+
+            HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(body, headers);
+
+            ResponseEntity<String> response = restTemplate.postForEntity(
+                    IMAGEKIT_UPLOAD_URL,
+                    request,
+                    String.class
+            );
+
+            JSONObject json = new JSONObject(response.getBody());
+            var url = json.getString("url");
+            int row= businessProfilesMapper.addImagevatrBusinessProfile(businessId, url);
+            if(row==0){
+                throw new AppException(ErrorCode.BUSINESS_NOT_FOUND);
+            }
+            return url;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Lỗi khi đọc file: " + e.getMessage();
+        }
     }
 
     private List<String> getDifference(List<String> oldid, List<String> newids) {
