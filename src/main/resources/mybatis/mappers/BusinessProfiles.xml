@@ -19,6 +19,7 @@
         <result property="isDeleted" column="is_deleted" jdbcType="BOOLEAN"/>
         <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
         <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
+        <result property="Image_Avatar_url" column="Image_Avatar_url"/>
     </resultMap>
 
     <!-- Business Verifycation -->
@@ -34,7 +35,7 @@
                    #{businessProfiles.companyInfo}, #{businessProfiles.websiteUrl},
                    #{businessProfiles.taxCode}, #{businessProfiles.email},
                    #{businessProfiles.phoneNumber}, #{businessProfiles.address},
-                   #{businessProfiles.isApproved}, #{businessProfiles.status},
+                   #{businessProfiles.isApproved}, 'active',
                    #{businessProfiles.isDeleted}, #{businessProfiles.createdAt},
                    #{businessProfiles.updatedAt}
                )
@@ -113,7 +114,8 @@
         status,
         is_deleted,
         created_at,
-        updated_at
+        updated_at,
+        Image_Avatar_url
         FROM business_profiles
         <where>
             <if test="isApproved != -1">
@@ -170,6 +172,11 @@
         WHERE profile_id = #{profileId}
     </update>
 
+    <update id="addImagevatrBusinessProfile" parameterType="map">
+        UPDATE business_profiles
+        SET Image_Avatar_url = #{images}
+        WHERE profile_id = #{profileId}
+    </update>
 
 
 </mapper>

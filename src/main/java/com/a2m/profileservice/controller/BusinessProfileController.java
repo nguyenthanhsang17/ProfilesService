@@ -10,8 +10,10 @@ import com.a2m.profileservice.model.BusinessProfiles;
 import com.a2m.profileservice.service.BusinessProfileService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/v1/business")
@@ -176,6 +178,20 @@ public class BusinessProfileController {
         var api = businessProfileService.checkProfileExist(userId);
         return ResponseEntity.ok(api);
     }
+
+
+
+    @PostMapping(value = "/uploadavatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<String>> uploadAvatar(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+        String userId = (String) request.getAttribute("userId");
+        String  url = businessProfileService.addImagesAvatarBusiness(file, userId);
+        ApiResponse<String> apiResponse = new ApiResponse<>();
+        apiResponse.setData(url);
+        apiResponse.setMessage("Success");
+        apiResponse.setCode(200);
+        return ResponseEntity.ok(apiResponse);
+    }
+
 
 
 

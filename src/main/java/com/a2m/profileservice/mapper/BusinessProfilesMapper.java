@@ -39,4 +39,5 @@ public interface BusinessProfilesMapper {
 
     int updateStatusBusinessProfileById(@Param("profileId") String profileId,@Param("status") String status);
 
+    int addImagevatrBusinessProfile(@Param("profileId") String profileId,@Param("images") String images);
 }

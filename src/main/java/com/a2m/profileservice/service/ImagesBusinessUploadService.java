@@ -11,5 +11,4 @@ public interface ImagesBusinessUploadService {
     List<ImagesBusiness> getImagesBusinessByBusinessId(String businessId);
 
     ImagesBusiness getFirstImageBusinessByBusinessId(String businessId);
-
 }

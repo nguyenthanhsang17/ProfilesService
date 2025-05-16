@@ -24,4 +24,5 @@ public class BusinessProfiles {
     private boolean isDeleted;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String Image_Avatar_url;
 }

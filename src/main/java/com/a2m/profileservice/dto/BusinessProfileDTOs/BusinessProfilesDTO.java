@@ -27,6 +27,6 @@ public class BusinessProfilesDTO {
     private boolean isDeleted;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
+    private String Image_Avatar_url;
     private List<String> imageBusiness;
 }

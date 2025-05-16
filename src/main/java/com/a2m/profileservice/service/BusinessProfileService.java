@@ -8,6 +8,7 @@ import com.a2m.profileservice.model.BusinessProfiles;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import com.a2m.profileservice.dto.ApiResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +36,8 @@ public interface BusinessProfileService {
 
     BusinessProfilesDTO getBusinessProfileById_2(@Param("profileId") String profileId);
     boolean updateStatusBusinessProfileById(@Param("profileId") String profileId);
+
+    String addImagesAvatarBusiness(MultipartFile images, String businessId);
 }
 
 
