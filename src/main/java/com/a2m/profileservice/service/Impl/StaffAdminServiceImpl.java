@@ -1,6 +1,7 @@
 package com.a2m.profileservice.service.Impl;
 
 import com.a2m.profileservice.dto.NotificationMessage;
+import com.a2m.profileservice.dto.PageResponseOffset;
 import com.a2m.profileservice.dto.request.UpdateRequestStatus;
 import com.a2m.profileservice.dto.response.*;
 import com.a2m.profileservice.exception.AppException;
@@ -17,7 +18,6 @@ import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -28,8 +28,13 @@ public class StaffAdminServiceImpl implements StaffAdminService {
     private final BusinessProfilesMapper businessProfilesMapper;
     private final StudentProfilesMapper studentProfilesMapper;
     private final RequestStatsMapper requestStatsMapper;
+
+
     @Autowired
     private AmqpTemplate amqpTemplate;
+    @Autowired
+    private ImagesBusinessMapper imagesBusinessMapper;
+
 
 
     @Override
@@ -63,14 +68,14 @@ public class StaffAdminServiceImpl implements StaffAdminService {
 
 
     @Override
-    public List<RequestStudentReponse> getRequestStudentsByStatus(String status) {
+    public List<RequestStudentResponse> getRequestStudentsByStatus(String status) {
         validateStatus(status);
         List<RequestStudents> requests = requestStudentMapper.getRequestStudentByStatus(status);
 
         return requests.stream()
                 .map(request -> {
                     String studentName = studentProfilesMapper.getStudentName(request.getStudentId());
-                    return RequestStudentReponse.builder()
+                    return RequestStudentResponse.builder()
                             .requestStudents(request)
                             .studentName(studentName)
                             .build();
@@ -78,13 +83,13 @@ public class StaffAdminServiceImpl implements StaffAdminService {
                 .toList();
     }
     @Override
-    public List<RequestStudentReponse> getAllRequestStudentsWithName() {
+    public List<RequestStudentResponse> getAllRequestStudentsWithName() {
         List<RequestStudents> requests = requestStudentMapper.getAllRequestStudents();
 
         return requests.stream()
                 .map(request -> {
                     String studentName = studentProfilesMapper.getStudentName(request.getStudentId());
-                    return RequestStudentReponse.builder()
+                    return RequestStudentResponse.builder()
                             .requestStudents(request)
                             .studentName(studentName)
                             .build();
@@ -122,17 +127,39 @@ public class StaffAdminServiceImpl implements StaffAdminService {
     }
     @Override
     public void updateRequestStudentStatus(UpdateRequestStatus request) {
-        if (!request.getStatus().equalsIgnoreCase("approve") && !request.getStatus().equalsIgnoreCase("reject")) {
+        String status = request.getStatus().toLowerCase();
+        if (!status.equals("approve") && !status.equals("reject")) {
             throw new AppException(ErrorCode.VALIDATION_ERROR);
         }
 
-        getRequestStudentById(request.getId());
-
-        requestStudentMapper.updateRequestStudentStatus(request.getId(), request.getStatus());
-
-        if (request.getStatus().equalsIgnoreCase("reject")) {
+        RequestStudentDetailResponse detail = getRequestStudentById(request.getId());
+        requestStudentMapper.updateRequestStudentStatus(request.getId(), status);
+        if (status.equals("approve")) {
+            studentProfilesMapper.updateStudentProfile(student_profiles.builder().isApproved(true).build());
+        }
+        if (status.equals("reject")) {
             requestStudentMapper.updateRejectReason(request.getId(), request.getReason());
         }
+
+        student_profiles student = detail.getStudentProfiles();
+        String title;
+        String message;
+        String type;
+        String url;
+
+        if (status.equals("approve")) {
+            title = "Your student account has been verified!";
+            message = "You can now apply for internships and manage your profile.";
+            type = "ACCOUNT_APPROVED";
+            url = "/student/dashboard";
+        } else {
+            title = "Your student account was NOT verified.";
+            message = request.getReason() != null ? request.getReason() : "Your profile does not meet the verification requirements.";
+            type = "ACCOUNT_REJECTED";
+            url = "/student/profile";
+        }
+
+        sendNotification(student.getProfileId(), title, message, type, url);
     }
 
 
@@ -159,18 +186,18 @@ public class StaffAdminServiceImpl implements StaffAdminService {
         String url;
 
         if (status.equals("approve")) {
-            title = "Tài khoản doanh nghiệp của bạn đã được xác minh!";
-            message = "Bạn đã có thể đăng bài tuyển dụng và quản lý công ty.";
+            title = "Your business account has been verified!";
+            message = "You can now post internships and manage your company profile.";
             type = "ACCOUNT_APPROVED";
             url = "/business/dashboard";
         } else {
-            title = "Tài khoản doanh nghiệp của bạn KHÔNG được xác minh.";
-            message = request.getReason() != null ? request.getReason() : "Hồ sơ chưa đủ điều kiện xác minh.";
+            title = "Your business account was NOT verified.";
+            message = request.getReason() != null ? request.getReason() : "Your profile does not meet the verification requirements.";
             type = "ACCOUNT_REJECTED";
             url = "/business/profile";
         }
 
-        sendBusinessNotification(business.getProfileId(), title, message, type, url);
+        sendNotification(business.getProfileId(), title, message, type, url);
     }
 
 
@@ -178,40 +205,66 @@ public class StaffAdminServiceImpl implements StaffAdminService {
     //cursor pagination
 
     @Override
-    public PageResponse<RequestStudentReponse> getRequestStudentByCursor(String status, String cursor, int limit) {
-        Timestamp cursorTime = (cursor != null && !cursor.isEmpty()) ? Timestamp.valueOf(cursor) : null;
-        List<RequestStudents> raw = requestStudentMapper.getRequestStudentsByCursor(status, cursorTime, limit);
-        List<RequestStudentReponse> items = raw.stream()
-                .map(request -> RequestStudentReponse.builder()
+    public PageResponseOffset<RequestStudentResponse> getRequestStudentsByOffset(String status, String keyword, int page, int limit) {
+        int offset = Math.max(0, page * limit);
+
+        List<RequestStudents> raw = requestStudentMapper.getRequestStudentsByOffset(status, keyword, limit, offset);
+
+        List<RequestStudentResponse> items = raw.stream()
+                .map(request -> RequestStudentResponse.builder()
                         .requestStudents(request)
                         .studentName(studentProfilesMapper.getStudentName(request.getStudentId()))
+                        .avatar(requestStudentMapper.getAvatarByStudentId(request.getStudentId()))
+                        .uni(requestStudentMapper.getUniversityByStudentId(request.getStudentId()))
                         .build())
                 .toList();
-        String nextCursor = raw.isEmpty() ? null : raw.get(raw.size() - 1).getSendTime().toString();
-        return PageResponse.<RequestStudentReponse>builder()
+
+        int totalItems = requestStudentMapper.countRequestStudents(status, keyword);
+        int totalPages = (int) Math.ceil((double) totalItems / limit);
+        boolean hasMore = page < totalPages;
+
+        return PageResponseOffset.<RequestStudentResponse>builder()
                 .items(items)
-                .nextCursor(nextCursor)
-                .hasMore(raw.size() == limit)
+                .page(page)
+                .limit(limit)
+                .totalItems(totalItems)
+                .totalPages(totalPages)
+                .hasMore(hasMore)
                 .build();
     }
 
+
+
     @Override
-    public PageResponse<RequestBusinessResponse> getRequestBusinessesByCursor(String status, String cursor, int limit) {
-            Timestamp cursorTime = (cursor != null && !cursor.isEmpty()) ? Timestamp.valueOf(cursor) : null;
-            List<RequestBusinesses> raw = requestBusinessesMapper.getRequestBusinessByCursor(status, cursorTime, limit);
-            List<RequestBusinessResponse> items = raw.stream()
-                    .map(request -> RequestBusinessResponse.builder()
-                            .request(request)
-                            .companyName(businessProfilesMapper.getCompanyNameById(request.getBusinessId()))
-                            .build())
-                    .toList();
-            String nextCursor = raw.isEmpty() ? null : raw.get(raw.size() -1).getSendTime().toString();
-            return  PageResponse.<RequestBusinessResponse>builder()
-                    .items(items)
-                    .nextCursor(nextCursor)
-                    .hasMore(raw.size() == limit)
-                    .build();
+    public PageResponseOffset<RequestBusinessResponse> getRequestBusinessesByOffset(String status, String keyword, int page, int limit) {
+        int offset = Math.max(0, page * limit);
+
+        List<RequestBusinesses> raw = requestBusinessesMapper.getRequestBusinessByOffset(status, keyword, limit, offset);
+
+        List<RequestBusinessResponse> items = raw.stream()
+                .map(request -> RequestBusinessResponse.builder()
+                        .request(request)
+                        .companyName(businessProfilesMapper.getCompanyNameById(request.getBusinessId()))
+                        .logoUrl(String.valueOf(imagesBusinessMapper.getFirstImageBusinessByBusinessId(request.getBusinessId())))
+                        .industry(requestBusinessesMapper.getIndustryById(request.getBusinessId()))
+                        .build())
+                .toList();
+
+        int totalItems = requestBusinessesMapper.countRequestBusiness(status, keyword);
+        int totalPages = (int) Math.ceil((double) totalItems / limit);
+        boolean hasMore = page < totalPages;
+
+        return PageResponseOffset.<RequestBusinessResponse>builder()
+                .items(items)
+                .page(page)
+                .limit(limit)
+                .totalItems(totalItems)
+                .totalPages(totalPages)
+                .hasMore(hasMore)
+                .build();
     }
+
+
 
     //help
     private void validateStatus(String status) {
@@ -235,7 +288,7 @@ public class StaffAdminServiceImpl implements StaffAdminService {
 
 
     //helper
-    private void sendBusinessNotification(String userId, String title, String content, String type, String link) {
+    private void sendNotification(String userId, String title, String content, String type, String link) {
         NotificationMessage msg = new NotificationMessage(
                 userId,
                 title,

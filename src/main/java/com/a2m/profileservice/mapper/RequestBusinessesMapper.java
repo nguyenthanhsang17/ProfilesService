@@ -25,10 +25,15 @@ public interface RequestBusinessesMapper {
     void updateRequestBusinessStatus(@Param("requestId") String requestId, @Param("status") String status);
 
     void updateRejectReason(@Param("requestId") String requestId, @Param("reason") String reason);
-    List<RequestBusinesses> getRequestBusinessByCursor(@Param("status") String status,
-                                                       @Param("cursor") Timestamp cursor,
-                                                       @Param("limit") int limit);
+    List<RequestBusinesses> getRequestBusinessByOffset(@Param("status") String status,
+                                                       @Param("keyword") String keyword,
+                                                       @Param("limit") int limit,
+                                                       @Param("offset") int offset);
 
+    int countRequestBusiness(@Param("status") String status,
+                             @Param("keyword") String keyword);
+    String getIndustryById(@Param("businessId") String businessId);
+    List<String> getImagesByBusinessId(String businessId);
 
 
     RequestBusinesses getRequestBusinessByBusinessId(@Param("businessId") String businessId);

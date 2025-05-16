@@ -1,5 +1,6 @@
 package com.a2m.profileservice.service;
 
+import com.a2m.profileservice.dto.PageResponseOffset;
 import com.a2m.profileservice.dto.request.UpdateRequestStatus;
 import com.a2m.profileservice.dto.response.*;
 
@@ -12,9 +13,9 @@ public interface StaffAdminService {
     List<RequestBusinessResponse> getRequestBusinessesByStatus(String status);
 
 
-    List<RequestStudentReponse> getRequestStudentsByStatus(String status);
+    List<RequestStudentResponse> getRequestStudentsByStatus(String status);
 
-    List<RequestStudentReponse> getAllRequestStudentsWithName();
+    List<RequestStudentResponse> getAllRequestStudentsWithName();
 
     RequestBusinessDetailResponse getRequestBusinessesById(String id);
 
@@ -26,9 +27,11 @@ public interface StaffAdminService {
     void updateRequestStudentStatus(UpdateRequestStatus request);
 
     //cursor pagination
-    PageResponse<RequestStudentReponse> getRequestStudentByCursor(String status, String cursor, int limit);
 
-    PageResponse<RequestBusinessResponse> getRequestBusinessesByCursor(String status, String cursor, int limit);
+
+    PageResponseOffset<RequestStudentResponse> getRequestStudentsByOffset(String status, String keyword, int page, int limit);
+
+    PageResponseOffset<RequestBusinessResponse> getRequestBusinessesByOffset(String status, String keyword, int page, int limit);
 
     int getTotalPendingRequest();
 

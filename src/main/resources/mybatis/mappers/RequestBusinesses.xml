@@ -65,19 +65,57 @@
         WHERE request_id = #{requestId}
     </update>
 
-    <!-- Phân trang theo cursor -->
-    <select id="getRequestBusinessByCursor" parameterType="map" resultMap="RequestBusinessResultMap">
-        SELECT * FROM request_businesses
-        WHERE is_deleted = 0
+    <select id="getRequestBusinessByOffset" parameterType="map" resultMap="RequestBusinessResultMap">
+        SELECT rb.*, bp.company_name, bp.industry
+        FROM request_businesses rb
+        JOIN business_profiles bp ON rb.business_id = bp.profile_id
+        WHERE rb.is_deleted = 0
         <if test="status != null">
-            AND status = #{status}
+            AND rb.status = #{status}
         </if>
-        <if test="cursor != null">
-            AND send_time &lt; #{cursor}
+        <if test="keyword != null and keyword != ''">
+            AND (
+            bp.company_name LIKE CONCAT('%', #{keyword}, '%')
+            OR bp.industry LIKE CONCAT('%', #{keyword}, '%')
+            )
         </if>
-        ORDER BY send_time DESC
-        LIMIT #{limit}
+        ORDER BY rb.send_time DESC
+        LIMIT #{limit} OFFSET #{offset}
     </select>
+
+    <select id="countRequestBusiness" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM request_businesses rb
+        JOIN business_profiles bp ON rb.business_id = bp.profile_id
+        WHERE rb.is_deleted = 0
+        <if test="status != null">
+            AND rb.status = #{status}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            AND (
+            bp.company_name LIKE CONCAT('%', #{keyword}, '%')
+            OR bp.industry LIKE CONCAT('%', #{keyword}, '%')
+            )
+        </if>
+    </select>
+
+
+
+    <select id="getIndustryById" parameterType="string" resultType="string">
+        SELECT industry
+        FROM business_profiles
+        WHERE profile_id = #{businessId}
+    </select>
+    <!-- Lấy danh sách ảnh doanh nghiệp theo businessId -->
+    <select id="getImagesByBusinessId" parameterType="string" resultType="string">
+        SELECT image_url
+        FROM images_business
+        WHERE business_id = #{businessId}
+          AND is_deleted = 0
+        ORDER BY image_id
+    </select>
+
+
 
 </mapper>
 

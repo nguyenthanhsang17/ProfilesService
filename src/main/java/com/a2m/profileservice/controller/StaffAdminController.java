@@ -1,10 +1,9 @@
 package com.a2m.profileservice.controller;
 
 import com.a2m.profileservice.dto.ApiResponse;
+import com.a2m.profileservice.dto.PageResponseOffset;
 import com.a2m.profileservice.dto.request.UpdateRequestStatus;
 import com.a2m.profileservice.dto.response.*;
-import com.a2m.profileservice.model.RequestBusinesses;
-import com.a2m.profileservice.model.RequestStudents;
 import com.a2m.profileservice.service.StaffAdminService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,15 +18,15 @@ public class StaffAdminController {
     private final StaffAdminService staffAdminService;
 
     @GetMapping("/request/students")
-    public ResponseEntity<ApiResponse<List<RequestStudentReponse>>> getStudentRequests(
+    public ResponseEntity<ApiResponse<List<RequestStudentResponse>>> getStudentRequests(
             @RequestParam(required = false) String status) {
 
-        List<RequestStudentReponse> result = (status == null)
+        List<RequestStudentResponse> result = (status == null)
                 ? staffAdminService.getAllRequestStudentsWithName()
                 : staffAdminService.getRequestStudentsByStatus(status);
 
         return ResponseEntity.ok(
-                ApiResponse.<List<RequestStudentReponse>>builder()
+                ApiResponse.<List<RequestStudentResponse>>builder()
                         .message("Get Request Students successfully")
                         .data(result)
                         .build()
@@ -96,34 +95,45 @@ public class StaffAdminController {
     //cursor pagination
 
 
-//1. Lấy trang đầu tiên (danh sách mới nhất)
-//    GET /api/v1/staff-admin/request/students/paging?status=approve&limit=10
-// Không truyền cursor → BE sẽ lấy từ bản ghi mới nhất theo send_time DESC
-//
-//2. Lấy trang kế tiếp
-//    GET /api/v1/staff-admin/request/students/paging?status=approve&cursor=2025-05-04+10:15:51&limit=10
-// Truyền cursor là send_time của bản ghi cuối cùng trang trước → BE lấy các bản ghi cũ hơn
-//
-// 3. Lấy tất cả trạng thái (bỏ lọc status)
-//    GET /api/v1/staff-admin/request/students/paging?limit=10
-//  Không truyền status → lấy tất cả request students bất kể trạng thái
 
 
-    @GetMapping("/request/students/paging")
-    public ResponseEntity<ApiResponse<PageResponse<RequestBusinessResponse>>> getBusinessesRequestsByCursor(
+    @GetMapping("/request/students/offset")
+    public ResponseEntity<ApiResponse<PageResponseOffset<RequestStudentResponse>>> getStudentRequestsByOffset(
             @RequestParam(required = false) String status,
-            @RequestParam(required = false) String cursor,
-            @RequestParam(defaultValue = "10") int limit) {
-
-        PageResponse<RequestBusinessResponse> result = staffAdminService.getRequestBusinessesByCursor(status, cursor, limit);
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int limit
+    ) {
+        PageResponseOffset<RequestStudentResponse> result =
+                staffAdminService.getRequestStudentsByOffset(status, keyword, page - 1, limit); // page - 1 vì FE truyền từ 1
 
         return ResponseEntity.ok(
-                ApiResponse.<PageResponse<RequestBusinessResponse>>builder()
-                        .message("Get business requests with cursor pagination successfully")
+                ApiResponse.<PageResponseOffset<RequestStudentResponse>>builder()
+                        .message("Get student requests with offset pagination successfully")
                         .data(result)
                         .build()
         );
     }
+    @GetMapping("/request/business/offset")
+    public ResponseEntity<ApiResponse<PageResponseOffset<RequestBusinessResponse>>> getBusinessRequestsByOffset(
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int limit
+    ) {
+        PageResponseOffset<RequestBusinessResponse> result =
+                staffAdminService.getRequestBusinessesByOffset(status, keyword, page - 1, limit); // page - 1 vì FE truyền từ 1
+
+        return ResponseEntity.ok(
+                ApiResponse.<PageResponseOffset<RequestBusinessResponse>>builder()
+                        .message("Get business requests with offset pagination successfully")
+                        .data(result)
+                        .build()
+        );
+    }
+
+
+
 
     @GetMapping("/pending/total")
     public ResponseEntity<ApiResponse<Integer>> getTotalPending() {

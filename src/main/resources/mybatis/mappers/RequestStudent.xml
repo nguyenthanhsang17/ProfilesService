@@ -106,19 +106,53 @@
         SET reason = #{reason}
         WHERE request_id = #{requestId}
     </update>
-    <!-- get all request dung cursor pagination-->
-    <select id="getRequestStudentsByCursor" parameterType="map" resultMap="requestStudentsResultMap">
-        SELECT *
-        FROM request_students
-        WHERE is_deleted = 0
+
+<!--    get request theo offset-->
+    <select id="getRequestStudentsByOffset" parameterType="map" resultMap="requestStudentsResultMap">
+        SELECT rs.*, sp.full_name, sp.university
+        FROM request_students rs
+        JOIN student_profiles sp ON rs.student_id = sp.profile_id
+        WHERE rs.is_deleted = 0
         <if test="status != null">
-            AND status = #{status}
+            AND rs.status = #{status}
         </if>
-        <if test="cursor != null">
-            AND send_time &lt; #{cursor}
+        <if test="keyword != null and keyword != ''">
+            AND (
+            sp.full_name LIKE CONCAT('%', #{keyword}, '%')
+            OR sp.university LIKE CONCAT('%', #{keyword}, '%')
+            )
         </if>
-        ORDER BY send_time DESC
-        LIMIT #{limit}
+        ORDER BY rs.send_time DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countRequestStudents" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM request_students rs
+        JOIN student_profiles sp ON rs.student_id = sp.profile_id
+        WHERE rs.is_deleted = 0
+        <if test="status != null">
+            AND rs.status = #{status}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            AND (
+            sp.full_name LIKE CONCAT('%', #{keyword}, '%')
+            OR sp.university LIKE CONCAT('%', #{keyword}, '%')
+            )
+        </if>
+    </select>
+
+
+    <select id="getAvatarByStudentId" parameterType="string" resultType="string">
+        SELECT avatar_url
+        FROM student_profiles
+        WHERE profile_id = #{studentId}
+    </select>
+
+    <select id="getUniversityByStudentId" parameterType="string" resultType="string">
+        SELECT university
+        FROM student_profiles
+        WHERE profile_id = #{studentId}
     </select>
 
 </mapper>

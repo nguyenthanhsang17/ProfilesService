@@ -25,9 +25,16 @@ public interface RequestStudentMapper {
     void updateRequestStudentStatus(@Param("requestId") String requestId, @Param("status") String status);
 
     void updateRejectReason(@Param("requestId") String requestId, @Param("reason") String reason);
-    List<RequestStudents> getRequestStudentsByCursor(@Param("status") String status,
-                                                     @Param("cursor") Timestamp cursor,
-                                                     @Param("limit") int limit);
+    List<RequestStudents> getRequestStudentsByOffset(@Param("status") String status,
+                                                     @Param("keyword") String keyword,
+                                                     @Param("limit") int limit,
+                                                     @Param("offset") int offset);
+
+    int countRequestStudents(@Param("status") String status,
+                             @Param("keyword") String keyword);
+    String getAvatarByStudentId(@Param("studentId") String studentId);
+
+    String getUniversityByStudentId(@Param("studentId") String studentId);
 
 
 
