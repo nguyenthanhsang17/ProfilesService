@@ -41,6 +41,13 @@ public class CvController {
         return ResponseEntity.ok(api);
     }
 
+    // get cv by cv id by Phuc
+    @GetMapping("/get-cv/{cvId}/{studentId}")
+    public ResponseEntity<?> GetCvByCvidAndStudentId(@PathVariable String cvId, @PathVariable String studentId) {
+        var api = cvSerrvice.getCvByCvId(cvId, studentId);
+        return ResponseEntity.ok(api);
+    }
+
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> UploadCv(HttpServletRequest request,@RequestParam("file") MultipartFile file) {
         String userId = (String) request.getAttribute("userId");
