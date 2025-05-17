@@ -23,7 +23,6 @@ eureka:
     prefer-ip-address: true
   client:
     service-url:
-#      defaultZone: http://localhost:8761/eureka
       defaultZone: http://18.140.1.2:8761/eureka
 
 
