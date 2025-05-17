@@ -163,6 +163,13 @@
     </update>
 
 
+    <update id="approveStudentProfile" parameterType="map">
+        UPDATE student_profiles
+        SET is_approved = #{isApproved},
+            updated_at = NOW()
+        WHERE profile_id = #{profileId}
+    </update>
+
 
 
 

@@ -18,6 +18,24 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtil jwtUtil;
 
+    private static final String[] PUBLIC_ENDPOINTS = {
+            "/api/student_profiles/checkExits",
+            "/api/auth/login",
+            "/swagger-ui",
+            "/v3/api-docs",
+            "/swagger-ui.html"
+    };
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        for (String publicEndpoint : PUBLIC_ENDPOINTS) {
+            if (path.startsWith(publicEndpoint)) {
+                return true;
+            }
+        }
+        return false;
+    }
     private String extractTokenFromRequest(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
         if (header != null && header.startsWith("Bearer ")) {

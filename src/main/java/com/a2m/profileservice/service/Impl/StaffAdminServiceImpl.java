@@ -135,10 +135,12 @@ public class StaffAdminServiceImpl implements StaffAdminService {
         RequestStudentDetailResponse detail = getRequestStudentById(request.getId());
         requestStudentMapper.updateRequestStudentStatus(request.getId(), status);
         if (status.equals("approve")) {
-            studentProfilesMapper.updateStudentProfile(student_profiles.builder().isApproved(true).build());
+            studentProfilesMapper.approveStudentProfile(detail.getStudentProfiles().getProfileId(), true);
         }
         if (status.equals("reject")) {
             requestStudentMapper.updateRejectReason(request.getId(), request.getReason());
+            studentProfilesMapper.approveStudentProfile(detail.getStudentProfiles().getProfileId(), false);
+
         }
 
         student_profiles student = detail.getStudentProfiles();
@@ -151,12 +153,12 @@ public class StaffAdminServiceImpl implements StaffAdminService {
             title = "Your student account has been verified!";
             message = "You can now apply for internships and manage your profile.";
             type = "ACCOUNT_APPROVED";
-            url = "/student/dashboard";
+            url = "/studentprofile";
         } else {
             title = "Your student account was NOT verified.";
             message = request.getReason() != null ? request.getReason() : "Your profile does not meet the verification requirements.";
             type = "ACCOUNT_REJECTED";
-            url = "/student/profile";
+            url = "/";
         }
 
         sendNotification(student.getProfileId(), title, message, type, url);
@@ -189,12 +191,12 @@ public class StaffAdminServiceImpl implements StaffAdminService {
             title = "Your business account has been verified!";
             message = "You can now post internships and manage your company profile.";
             type = "ACCOUNT_APPROVED";
-            url = "/business/dashboard";
+            url = "/businessprofile";
         } else {
             title = "Your business account was NOT verified.";
             message = request.getReason() != null ? request.getReason() : "Your profile does not meet the verification requirements.";
             type = "ACCOUNT_REJECTED";
-            url = "/business/profile";
+            url = "/";
         }
 
         sendNotification(business.getProfileId(), title, message, type, url);
@@ -218,6 +220,7 @@ public class StaffAdminServiceImpl implements StaffAdminService {
                         .uni(requestStudentMapper.getUniversityByStudentId(request.getStudentId()))
                         .build())
                 .toList();
+
 
         int totalItems = requestStudentMapper.countRequestStudents(status, keyword);
         int totalPages = (int) Math.ceil((double) totalItems / limit);

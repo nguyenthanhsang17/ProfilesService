@@ -29,5 +29,9 @@ public interface StudentProfilesMapper {
     String getStatusStudent(@Param("id") String id);
 
     int updateStatusStudent(@Param("id") String id, @Param("status") String status);
+
+
+    void approveStudentProfile(@Param("profileId") String profileId, @Param("isApproved") boolean isApproved);
+
 }
 
