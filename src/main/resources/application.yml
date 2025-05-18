@@ -17,7 +17,10 @@ spring:
     port: 5672
     username: admin
     password: admin
-
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
 
 eureka:
   instance:
