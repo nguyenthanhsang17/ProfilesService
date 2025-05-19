@@ -13,7 +13,7 @@ spring:
     discovery:
       enabled: true
   rabbitmq:
-    host: localhost
+    host: 54.251.197.30
     port: 5672
     username: admin
     password: admin
