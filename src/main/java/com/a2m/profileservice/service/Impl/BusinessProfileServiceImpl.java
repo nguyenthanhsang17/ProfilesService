@@ -195,7 +195,8 @@ public class BusinessProfileServiceImpl implements BusinessProfileService {
                         .status(bp.getStatus())
                         .isDeleted(bp.isDeleted())
                         .createdAt(bp.getCreatedAt())
-                        .updatedAt(bp.getUpdatedAt()).build()).toList();
+                        .updatedAt(bp.getUpdatedAt())
+                        .Image_Avatar_url(bp.getImage_Avatar_url()).build()).toList();
         int count  = businessProfilesMapper.CountAllBusinessProfiles(search, isApproved);
         PageResult<BusinessProfilesDTO> pageResult = new PageResult<>();
         int totalPage = (int) Math.ceil((double) count / (double) limit);
