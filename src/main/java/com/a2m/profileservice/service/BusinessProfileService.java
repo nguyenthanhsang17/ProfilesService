@@ -38,6 +38,9 @@ public interface BusinessProfileService {
     boolean updateStatusBusinessProfileById(@Param("profileId") String profileId);
 
     String addImagesAvatarBusiness(MultipartFile images, String businessId);
+
+
+    String getCompanyNameById(@Param("profileId") String profileId);
 }
 
 

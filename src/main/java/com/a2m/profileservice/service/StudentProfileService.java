@@ -19,7 +19,7 @@ public interface StudentProfileService {
     public ApiResponse<student_profilesDTOForCreate> CreateProfileStudent(student_profilesDTOForCreate student_profilesDTO, String id);
     public ApiResponse<?> updateAvatar(String id, String url);
 
-    public ApiResponse<Boolean> checkIfExists(String id);
+    public ApiResponse<Integer> checkIfExists(String id);
 
     public ApiResponse<?> checkExits(String id);
     public ApiResponse<PageResult<student_profilesDTO>> GetStudentProfile(String search,
