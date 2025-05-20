@@ -250,13 +250,19 @@ public class StudentProfileServiceImpl implements StudentProfileService {
     }
 
     @Override
-    public ApiResponse<Boolean> checkIfExists(String id) {
+    public ApiResponse<Integer> checkIfExists(String id) {
         var check = mapper.checkIfExists(id);
         if (!check) {
             throw new AppException(ErrorCode.STUDENT_NOT_PROFILE);
         }
-        ApiResponse<Boolean> apiResponse = new ApiResponse<>();
-        apiResponse.setData(check);
+
+        var user = mapper.getById(id);
+        ApiResponse<Integer> apiResponse = new ApiResponse<>();
+        if(user.getStatus().equals("inactive")){
+            apiResponse.setData(0);
+        }else{
+            apiResponse.setData(1);
+        }
         apiResponse.setMessage("Check Success");
         apiResponse.setCode(200);
 

@@ -301,6 +301,12 @@ public class BusinessProfileServiceImpl implements BusinessProfileService {
         }
     }
 
+    @Override
+    public String getCompanyNameById(String profileId) {
+        String name = businessProfilesMapper.getCompanyNameById(profileId);
+        return name;
+    }
+
     private List<String> getDifference(List<String> oldid, List<String> newids) {
         // Tạo một bản sao của list1 để giữ nguyên list1 ban đầu
         List<String> difference = new ArrayList<>(oldid);

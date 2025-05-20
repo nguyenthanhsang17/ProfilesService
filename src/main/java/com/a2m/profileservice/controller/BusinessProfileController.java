@@ -193,6 +193,17 @@ public class BusinessProfileController {
     }
 
 
+    @GetMapping("/getCompanyname")
+    public ResponseEntity<ApiResponse<String>> getCompanyname(HttpServletRequest request) {
+        String userId = (String) request.getAttribute("userId");
+        String name  = businessProfileService.getCompanyNameById(userId);
+        ApiResponse<String> apiResponse = new ApiResponse<>();
+        apiResponse.setData(name);
+        apiResponse.setMessage("Success");
+        apiResponse.setCode(200);
+        return ResponseEntity.ok(apiResponse);
+    }
+
 
 
 
