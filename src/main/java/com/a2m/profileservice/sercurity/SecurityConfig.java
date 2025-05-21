@@ -14,7 +14,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final JwtFilter jwtFilter;
     private final String[] PUBLIC_ENDPOINTS = {
-            "/api/student_profiles/checkExits"
+            "/api/student_profiles/checkExits",
+            "/api/v1/business/status/**"
     };
 
     public SecurityConfig(JwtFilter jwtFilter) {
