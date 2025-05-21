@@ -23,15 +23,21 @@ public class JwtFilter extends OncePerRequestFilter {
             "/api/auth/login",
             "/swagger-ui",
             "/v3/api-docs",
-            "/swagger-ui.html"
+            "/swagger-ui.html",
+            "/api/v1/business/status"
     };
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
+        System.out.println(path);
         for (String publicEndpoint : PUBLIC_ENDPOINTS) {
             if (path.startsWith(publicEndpoint)) {
+                System.out.println("sang");
                 return true;
+
+            }else{
+                System.out.println("not sang");
             }
         }
         return false;

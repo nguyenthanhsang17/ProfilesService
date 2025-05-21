@@ -204,6 +204,25 @@ public class BusinessProfileController {
         return ResponseEntity.ok(apiResponse);
     }
 
+    @GetMapping("/status/{profileId}")
+    public ResponseEntity<ApiResponse<BusinessProfiles>> getBusinessProfileByIdAny(@PathVariable String profileId) {
+        BusinessProfiles existingBusiness = businessProfileService.getBusinessProfileByIdAny(profileId);
+        ApiResponse<BusinessProfiles> response = ApiResponse.<BusinessProfiles>builder()
+                .code(1000)
+                .data(existingBusiness)
+                .message("Business profile found")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+
+
+
+
+
+
+
+
 
 
 
