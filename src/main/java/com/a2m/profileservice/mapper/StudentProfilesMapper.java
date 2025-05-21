@@ -33,5 +33,6 @@ public interface StudentProfilesMapper {
 
     void approveStudentProfile(@Param("profileId") String profileId, @Param("isApproved") boolean isApproved);
 
+    Integer checkApproveStatus(@Param("id") String id);
 }
 
