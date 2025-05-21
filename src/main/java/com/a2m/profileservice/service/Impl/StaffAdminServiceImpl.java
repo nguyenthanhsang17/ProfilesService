@@ -1,6 +1,6 @@
 package com.a2m.profileservice.service.Impl;
 
-import com.a2m.profileservice.dto.NotificationMessage;
+import com.a2m.profileservice.dto.message.NotificationMessage;
 import com.a2m.profileservice.dto.PageResponseOffset;
 import com.a2m.profileservice.dto.request.UpdateRequestStatus;
 import com.a2m.profileservice.dto.response.*;

@@ -10,11 +10,20 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    public static final String EXCHANGE = "notification.exchange";
+    // Notification Exchange
+    public static final String NOTIFICATION_EXCHANGE = "notification.exchange";
+
+    // Profile Exchange (đẩy sang recruitment-service)
+    public static final String PROFILE_EXCHANGE = "profile.exchange";
 
     @Bean
     public TopicExchange notificationExchange() {
-        return new TopicExchange(EXCHANGE);
+        return new TopicExchange(NOTIFICATION_EXCHANGE);
+    }
+
+    @Bean
+    public TopicExchange profileExchange() {
+        return new TopicExchange(PROFILE_EXCHANGE);
     }
 
     @Bean

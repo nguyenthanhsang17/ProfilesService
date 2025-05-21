@@ -3,6 +3,7 @@ package com.a2m.profileservice.service.Impl;
 import com.a2m.profileservice.dto.ApiResponse;
 import com.a2m.profileservice.dto.Paging.PageResult;
 import com.a2m.profileservice.dto.StudentCardDTO.StudentCardDTO;
+import com.a2m.profileservice.dto.message.StudentProfileUpdateMessage;
 import com.a2m.profileservice.dto.response.PageResponse;
 import com.a2m.profileservice.dto.student_profilesDTOs.student_profilesDTO;
 import com.a2m.profileservice.dto.student_profilesDTOs.student_profilesDTOForCreate;
@@ -15,6 +16,7 @@ import com.a2m.profileservice.mapper.StudentProfilesMapper;
 import com.a2m.profileservice.model.StudentCard;
 import com.a2m.profileservice.model.student_profiles;
 import com.a2m.profileservice.service.StudentProfileService;
+import com.a2m.profileservice.util.ProfileUpdatePublisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,12 +31,13 @@ public class StudentProfileServiceImpl implements StudentProfileService {
     private final StudentProfilesMapper mapper;
     private final StudentCardMapper studentCardMapper;
     private final RequestStudentMapper requestStudentMapper;
-
+    private final ProfileUpdatePublisher profileUpdatePublisher;
     @Autowired
-    public StudentProfileServiceImpl(StudentProfilesMapper mapper, StudentCardMapper studentCardMapper, RequestStudentMapper requestStudentMapper) {
+    public StudentProfileServiceImpl(StudentProfilesMapper mapper, StudentCardMapper studentCardMapper, RequestStudentMapper requestStudentMapper, ProfileUpdatePublisher profileUpdatePublisher) {
         this.mapper = mapper;
         this.studentCardMapper = studentCardMapper;
         this.requestStudentMapper = requestStudentMapper;
+        this.profileUpdatePublisher = profileUpdatePublisher;
     }
 
 
@@ -170,6 +173,15 @@ public class StudentProfileServiceImpl implements StudentProfileService {
         if (row <= 0) {
             throw new AppException(ErrorCode.DATABASE_CONNECTION_FAILED);
         }
+        StudentProfileUpdateMessage msg = new StudentProfileUpdateMessage(
+                studentProfiles.getProfileId(),
+                studentProfiles.getFullName(),
+                studentProfiles.getDateOfBirth(),
+                studentProfiles.getUniversity(),
+                studentProfiles.getAvatarUrl()
+        );
+        profileUpdatePublisher.sendStudentProfileUpdate(msg);
+
         // logic has big problem !!!!
 //        if ((student_profilesDTO.getStudentCardUrlNew() == null ||
 //            !student_profilesDTO.getStudentCardUrlNew().isPresent() || student_profilesDTO.getStudentCardUrlNew().get().size() == 0)&&) {
@@ -243,6 +255,14 @@ public class StudentProfileServiceImpl implements StudentProfileService {
     @Override
     public ApiResponse<?> updateAvatar(String id, String url) {
         int row = mapper.UpdateAvatar(id, url);
+        StudentProfileUpdateMessage msg = new StudentProfileUpdateMessage(
+                id,
+                null,
+                null,
+                null,
+                url
+        );
+        profileUpdatePublisher.sendStudentProfileUpdate(msg);
         ApiResponse<?> apiResponse = new ApiResponse<>();
         apiResponse.setCode(200);
         apiResponse.setMessage("Update Success");

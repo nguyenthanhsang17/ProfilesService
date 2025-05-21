@@ -4,6 +4,7 @@ import com.a2m.profileservice.dto.ApiResponse;
 import com.a2m.profileservice.dto.BusinessProfileDTOs.BusinessProfilesDTO;
 import com.a2m.profileservice.dto.BusinessProfileDTOs.BusinessProfilesForUpdate;
 import com.a2m.profileservice.dto.Paging.PageResult;
+import com.a2m.profileservice.dto.message.BusinessProfileUpdateMessage;
 import com.a2m.profileservice.dto.response.PageResponse;
 import com.a2m.profileservice.exception.AppException;
 import com.a2m.profileservice.exception.ErrorCode;
@@ -12,6 +13,7 @@ import com.a2m.profileservice.mapper.ImagesBusinessMapper;
 import com.a2m.profileservice.model.BusinessProfiles;
 import com.a2m.profileservice.model.ImagesBusiness;
 import com.a2m.profileservice.service.BusinessProfileService;
+import com.a2m.profileservice.util.ProfileUpdatePublisher;
 import lombok.AllArgsConstructor;
 import org.apache.kafka.common.protocol.types.Field;
 import org.apache.kafka.shaded.com.google.protobuf.Api;
@@ -44,6 +46,8 @@ public class BusinessProfileServiceImpl implements BusinessProfileService {
 
     private BusinessProfilesMapper businessProfilesMapper;
     private ImagesBusinessMapper imagesBusinessMapper;
+
+    private final ProfileUpdatePublisher profileUpdatePublisher;
 
     @Override
     public BusinessProfiles businessVerifycation(BusinessProfiles businessProfiles, String profileId) {
@@ -119,6 +123,13 @@ public class BusinessProfileServiceImpl implements BusinessProfileService {
             }
         }
         businessProfilesMapper.updateBusinessProfile(existingBusinessProfile);
+        profileUpdatePublisher.sendBusinessProfileUpdate(
+                new BusinessProfileUpdateMessage(
+                        businessId,
+                        existingBusinessProfile.getCompanyName(),
+                        existingBusinessProfile.getImage_Avatar_url()
+                )
+        );
 
         return existingBusinessProfile;
     }
