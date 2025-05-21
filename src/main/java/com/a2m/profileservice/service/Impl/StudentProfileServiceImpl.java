@@ -357,4 +357,10 @@ public class StudentProfileServiceImpl implements StudentProfileService {
         }
         return true;
     }
+
+    @Override
+    public boolean checkApproveStatus(String id) {
+        Integer count  = mapper.checkApproveStatus(id);
+        return count > 0;
+    }
 }

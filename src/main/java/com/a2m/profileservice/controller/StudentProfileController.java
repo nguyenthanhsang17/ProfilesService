@@ -171,4 +171,17 @@ public class StudentProfileController {
     }
 
 
+
+    @GetMapping("/ckeckapproval")
+    public ResponseEntity<ApiResponse<?>> ckeckApprove(HttpServletRequest request) {
+        String userId = (String) request.getAttribute("userId");
+         var api = studentProfileService.checkApproveStatus(userId);
+         ApiResponse<Boolean> response = new ApiResponse<>();
+         response.setCode(200);
+         response.setMessage(""+api);
+         response.setData(api);
+         return ResponseEntity.ok(response);
+    }
+
+
 }

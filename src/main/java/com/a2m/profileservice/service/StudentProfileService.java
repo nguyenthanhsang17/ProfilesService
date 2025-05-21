@@ -28,5 +28,6 @@ public interface StudentProfileService {
                                                                           int limit);
 
     public boolean updateStatusStudent(String id);
+    public boolean checkApproveStatus(String id);
 
 }
