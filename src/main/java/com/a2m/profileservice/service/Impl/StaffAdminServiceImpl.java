@@ -178,7 +178,13 @@ public class StaffAdminServiceImpl implements StaffAdminService {
 
         if (status.equals("reject")) {
             requestBusinessesMapper.updateRejectReason(request.getId(), request.getReason());
+            businessProfilesMapper.UpdateBusinessProfileisApproved(request.getId(), false);
         }
+        if(status.equals("approve")){
+            businessProfilesMapper.UpdateBusinessProfileisApproved(request.getId(), true);
+        }
+
+
 
         BusinessProfiles business = detail.getBusinessProfile();
 

@@ -171,7 +171,7 @@
     </update>
 
     <select id="checkApproveStatus" parameterType="String" resultType="Integer">
-        select COUNT(*) > 0 from student_profiles sp  WHERE sp.profile_id = #{id} and sp.is_approved  = 1
+        select COUNT(*) from student_profiles sp  WHERE sp.profile_id = #{id} and sp.is_approved  = 1
     </select>
 
 

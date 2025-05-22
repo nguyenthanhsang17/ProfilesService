@@ -179,4 +179,13 @@
     </update>
 
 
+
+    <update id="UpdateBusinessProfileisApproved" parameterType="map">
+        UPDATE business_profiles
+        SET is_approved = #{isApproved},
+            updated_at = NOW()
+        WHERE profile_id = #{profileId}
+    </update>
+
+
 </mapper>
